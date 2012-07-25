@@ -1,0 +1,648 @@
+/*
+Theme Name: White as Milk
+Theme URI: http://www.azeemazeez.com/blogs/white-as-milk/
+Description: White as Milk is a clean template that puts focus on the content rather than the design.
+Version: 1.8
+Author: Azeem Azeez
+Author URI: http://azeemazeez.com
+Tags: blue, white, fixed width, two columns, widgets, clean
+
+	White as Milk 1.8
+	 http://www.azeemazeez.com/blogs/white-as-milk/
+  
+  White as Milk is a clean template that puts focus on the content rather than the design. The top part
+  of this stylesheet contains elements which makes it easier for designers to customize their design.
+  
+	The CSS, XHTML and design is released under GPL: http://www.opensource.org/licenses/gpl-license.php*/
+
+
+/*=-=-=-=-=-=-=-=-=-=-= BEGIN CUSTOMIZATION =-=-=-=-=-=-=-=-=-=-=*/
+
+/*Background Color of the page*/
+  body {background-color:white;}
+
+/*Body text color*/
+  body {color:#333;}
+
+/*Text color of the blog title in the header*/
+  #header h1 a {color:#3b6ea5;}
+
+/*Text color of the blog description in the header*/
+  .description {color:#333;}
+
+/*Links color*/
+  a {color:#0066CC}
+
+/*Links hover color*/
+  a:hover {color:#333}
+
+/*Headings color*/
+  .post h2 a, #sidebar h2 {color:#333;}
+
+/*Headings hover color*/
+  .post h2 a:hover {color:#0066CC;}
+
+
+/*Width of the entire page. You can
+  also use a flexible width like so:
+   #page {width:64em;}
+ #page {width:700px;}
+*/
+ #page {width:800px;}
+
+
+/*IT'S ADVISED *NOT* TO CHANGE THESE, IF POSSIBLE*/
+/*Width of the content area*/
+  #content {width: 72%;}
+
+/*Width of the sidebar*/
+  #sidebar {width:24%;}
+
+/*Position of the header from the left edge.*/
+  #headerimg {margin-left:28%;}
+
+/*Position of the footer from the left edge.*/
+  #footer p {padding-left:28%;}
+
+/*=-=-=-=-=-=-=-=-=-=-=- END CUSTOMIZATION -=-=-=-=-=-=-=-=-=-=-=*/
+
+
+
+/*
+THE FOLLOWING CODE IS DERIVED FROM THE DEFAULT "KUBRICK" THEME.
+THE STRUCTURE AND LAYOUT IS IN MY OPINION, NOT THE WAY CSS SHOULD
+BE ORGANIZED, BUT FOR NOW I AM LEAVING IT THE WAY IT IS TO KEEP
+IT CONSISTENT.
+*/
+
+/* Begin Typography & Colors */
+body {
+	font-size: 70.0%; /* Resets 1em to 10px */
+	font-family: 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	/*background: #fff;
+	color: #333;*/
+	text-align: center;
+	}
+
+#page {
+	text-align: justify;
+	}
+
+#header {}
+#headerimg {}
+
+#content {
+	font-size: 1.2em
+	}
+
+#content .entry p {
+	font-size: 1.1em;
+	}
+
+#content .entry, #content .entry {
+	line-height: 1.4em;
+	}
+#content .webgen-menu-vert , #content .webgen-menu-vert  {
+	line-height: 1.0em;
+	}
+
+#content {
+	line-height: 1.6em;
+	}
+
+#content .postmetadata {}
+
+.alt {
+	background-color: #f8f8f8;
+	border-top: 1px solid #ddd;
+	border-bottom: 1px solid #ddd;
+	}
+
+#footer {
+	border: none;
+	}
+
+small {
+	font-family: Arial, Helvetica, Sans-Serif;
+	font-size: 0.9em;
+	line-height: 1.5em;
+	}
+
+h1, h2, h3 {
+	font-family: 'Trebuchet MS', 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	font-weight: bold;
+	}
+
+#header h1 {
+	font-size:3.2em;
+	}
+
+.description {
+  font-size:1em;
+/*  color:#333;*/
+	}
+
+h2 {
+	font-size: 1.6em;
+	}
+
+h2.pagetitle {
+	font-size: 1.6em;
+background-color:#e7e7e7;
+border:1px solid #777;
+padding:4px 0px 4px 0px;
+margin-top:16px;
+	}
+
+#sidebar h2 {
+	font-family: 'Lucida Grande', Verdana, Sans-Serif;
+	font-size: 1.2em;
+	}
+
+h3 {
+	font-size: 1.3em;
+	}
+
+h1, h1 a, h1 a:hover, h1 a:visited, #headerimg{
+	text-decoration: none;
+	color: #3b6ea5;
+	}
+
+h2, h2 a, h2 a:visited, h3, h3 a, h3 a:visited {
+	/*color: #333;*/
+	}
+
+h2, h2 a, h2 a:hover, h2 a:visited, h3, h3 a, h3 a:hover, h3 a:visited, #sidebar h2, #wp-calendar caption, cite {
+	text-decoration: none;
+	}
+
+.entry p a:visited {
+	color: #b85b5a;
+	}
+
+
+#sidebar {
+	font: 1em 'Lucida Grande', Verdana, Arial, Sans-Serif;
+	}
+
+small, #sidebar ul li, #sidebar ul ol li, .nocomments, .postmetadata, blockquote, strike {
+	/*color: #777;*/
+	}
+
+code {
+	font: 1.1em 'Courier New', Courier, Fixed;
+	}
+
+acronym, abbr, span.caps
+{
+	font-size: 0.9em;
+	letter-spacing: .07em;
+	}
+
+a, h2 a:hover, h3 a:hover {
+/*	color: #06c;*/
+	text-decoration: underline;
+	}
+
+#sidebar a,
+.postmetadata a,
+.navigation a,
+ol.commentlist cite a,
+.commentmetadata a {
+       text-decoration:none;
+}
+
+a:hover {
+	/*color: #147;*/
+	text-decoration: underline;
+	}
+
+/* End Typography & Colors */
+
+
+/* Begin Structure */
+
+/* Always show the scrollbar */
+html {height: 100%;margin-bottom: 1px;}
+
+body {
+	margin: 0 0 20px 0;
+	padding: 0;
+	}
+
+#page {
+	margin: 20px auto;
+	padding: 0;
+	min-width: 500px;
+/*	width: 760px;*/
+	}
+
+#header {
+	margin: 0 0 22px 1px;
+	padding: 0;
+}
+
+#content {
+	float: right;
+	padding: 0 0 20px 10px;
+	margin: 0px 0 0;
+  border-bottom:1px solid #999;
+/*	width: 550px;*/
+overflow:hidden;
+	}
+
+#sidebar {
+text-align:right;
+}
+
+.post {
+  border-bottom:1px solid #999;
+  padding-bottom:4px;
+	}
+
+.post h2 {
+  padding-top:14px;
+  padding-bottom:2px;
+}
+
+.post hr {
+  display: block;
+}
+
+#content .post {
+  margin: 0;
+}
+
+#content .postmetadata {
+  font-size:11px;
+padding-top:14px;
+color:#555;
+}
+
+#tags {
+font-size:11px !important;
+color:#999;
+}
+
+#content .postmetadata {
+	margin: 10px 0;
+	}
+
+#content .smallattachment {
+	text-align: center;
+	float: left;
+	width: 128px;
+	margin: 5px 5px 5px 0px;
+}
+
+#content .attachment {
+	text-align: center;
+	margin: 5px 0px;
+}
+
+.postmetadata {
+	clear: both;
+}
+
+.clear {
+	clear: both;
+}
+
+#footer {
+	padding: 0;
+	margin: 0 auto;
+	width: 100%;
+	clear: both;
+	}
+
+#footer p {
+	margin: 0;
+	padding-bottom:24px;
+}
+
+/* End Structure */
+
+
+
+/*	Begin Headers */
+h1 {
+	margin: 0;
+	}
+
+h2 {
+	margin: 0px 0 0 0;
+	}
+
+h2.pagetitle {
+		text-align: center;
+}
+
+#sidebar h2 {
+	margin: 5px 0 0;
+	padding: 0;
+	}
+
+h3 {
+	padding: 0;
+	margin: 30px 0 0;
+	}
+
+h3.comments {
+	padding: 0;
+	margin: 40px auto 20px ;
+	}
+/* End Headers */
+
+
+
+/* Begin Images */
+p img {
+	padding: 0;
+	max-width: 100%;
+	}
+
+/*	Using 'class="alignright"' on an image will (who would've
+	thought?!) align the image to the right. And using 'class="centered',
+	will of course center the image. This is much better than using
+	align="center", being much more futureproof (and valid) */
+
+img.centered {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	}
+
+img.alignright {
+	padding: 4px;
+	margin: 0 0 2px 7px;
+	display: inline;
+	}
+
+img.alignleft {
+	padding: 4px;
+	margin: 0 7px 2px 0;
+	display: inline;
+	}
+
+.alignright {
+	float: right;
+	}
+
+.alignleft {
+	float: left
+	}
+/* End Images */
+
+
+
+/* Begin Lists
+
+	Special stylized non-IE bullets
+	Do not work in Internet Explorer, which merely default to normal bullets. */
+
+html>body .entry ul {
+	margin-left: 0px;
+	padding: 0 0 0 30px;
+	list-style: none;
+	padding-left: 10px;
+	text-indent: -10px;
+	}
+
+html>body .entry li {
+	margin: 7px 0 8px 10px;
+	}
+
+.entry ul li:before, #sidebar ul li:before {
+	content: "\00BB \0020";
+	}
+
+.entry ol {
+	padding: 0 0 0 35px;
+	margin: 0;
+	}
+
+.entry ol li {
+	margin: 0;
+	padding: 0;
+	}
+
+.postmetadata ul, .postmetadata li {
+	display: inline;
+	list-style-type: none;
+	list-style-image: none;
+	}
+
+#sidebar ul, #sidebar ul ol {
+	margin: 0;
+	padding: 0;
+	}
+
+#sidebar ul li {
+	list-style-type: none;
+	list-style-image: none;
+	margin-bottom: 15px;
+	}
+
+#sidebar ul p, #sidebar ul select {
+	margin: 5px 0 8px;
+	}
+
+#sidebar ul, #sidebar ul ol {
+	margin: 5px 0 0 10px;
+	}
+
+#sidebar ul ul, #sidebar ul ol {
+	margin: 0 0 0 10px;
+	}
+
+ol li, #sidebar ul ol li {
+	list-style: decimal outside;
+	}
+
+#sidebar ul li, #sidebar ul ol li {
+	margin: 3px 0 0;
+	padding: 0;
+	}
+/* End Entry Lists */
+
+
+
+/* Begin Form Elements */
+#searchform {
+	margin: 10px auto;
+	padding: 5px 0px 5px 3px;
+	}
+
+#sidebar #searchform #s {
+	width: 108px;
+	padding: 1px;
+	}
+
+#sidebar #searchsubmit {
+	padding: 1px;
+	}
+
+.entry form { /* This is mainly for password protected posts, makes them look better. */
+	text-align:center;
+	}
+
+select {
+	width: 130px;
+	}
+
+#commentform input {
+	width: 170px;
+	padding: 2px;
+	margin: 5px 5px 1px 0;
+	}
+
+#commentform textarea {
+	width: 98%;
+	padding: 2px;
+	}
+
+#commentform #submit {
+	margin: 0;
+	}
+/* End Form Elements */
+
+
+
+/* Begin Comments*/
+.alt {
+	margin: 0;
+	padding: 10px;
+	}
+
+
+
+/* Begin Sidebar */
+#sidebar {
+	padding: 1px 10px 10px 0;
+/*	width: 180px;*/
+margin-top:30px;
+	}
+
+#sidebar form {
+	margin: 0;
+	}
+/* End Sidebar */
+
+
+
+
+
+/* Begin Various Tags & Classes */
+acronym, abbr, span.caps {
+	cursor: help;
+	}
+
+acronym, abbr {
+	border-bottom: 1px dashed #999;
+	}
+
+blockquote {
+	margin: 15px 30px 0 10px;
+	padding-left: 20px;
+	border-left: 5px solid #ddd;
+	}
+
+blockquote cite {
+	margin: 5px 0 0;
+	display: block;
+	}
+
+.center {
+	text-align: center;
+	}
+
+.hidden {
+	display: none;
+	}
+
+hr {
+	display: none;
+	}
+
+a img {
+	border: none;
+	}
+
+.navigation {
+	display: block;
+	text-align: center;
+	margin-top: 10px;
+  /*height:40px;*/
+  padding:2px 0px 20px 0px;
+	}
+
+.navigation .alignleft{
+  padding-right:4px;}
+
+/* End Various Tags & Classes*/
+
+
+/* Captions */
+.aligncenter,
+div.aligncenter {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+
+/* publi page */
+
+
+#page qs { width: auto; border-style: solid; border-color: gray; border-width: 1px 1px 0px 1px; padding: 0.5em 0.5em; display:none; position:relative; }
+#page qs form { padding: 0px; margin: 0px; }
+#page qs form p { padding: 0px; margin: 0px; }
+ 
+.invalidsearch { background-color: red; }
+
+table { border: 1px gray none; width: 100%; empty-cells: show; border-spacing: 0em 0.3em; margin-top: 1em; }
+th, td { border-width: 0px 0px; border-color: gray; border-style: solid; padding: 0.5em; vertical-align: top;  }
+td { text-align: justify; vertical-align: top; }
+
+td a { color: navy; text-decoration: none; }
+td a:hover  { text-decoration: underline; }
+
+tr.noshow { display: none;}
+
+tr.highlight td { background-color: #F1F1F1 }
+tr.abstract td, tr.review td, tr.bibtex td { background-color: #F1F1F1; border-bottom: 1px black solid; text-align: justify; }
+tr.nextshow td { border-bottom: none; }
+
+tr.bibtex td pre {overflow: auto; }
+
+p.infolinks { margin: 0.5em 0em 0em 0em; padding: 0px; }
+
+#page qs form qssettings { padding: 0.5em; position: absolute; top: 0.2em; right: 0.2em; border: 0px gray solid; background-color: white; display: none;}
+#page qs form qssettings p { font-weight: bold; cursor: pointer; }
+#page qs form qssettings ul { display: none; list-style-type: none; padding-left: 0; margin: 0; }
+#page qs form qssettings.active ul { display: none; }
+
+@media print {
+	p.infolinks, #qssettings, #qs { display: none !important; }
+	tr { page-break-inside: avoid; }
+		tr > * + * + * + * + * {display: none; }
+	thead tr::before { content: "Reference"; border: 1px gray solid; padding: 0.5em; vertical-align: top; font-weight: bold; text-align: center; display: table-cell; background-color: #EFEFEF; }
+	tr[id]::before { content: attr(id); display: table-cell; border: 1px gray solid; padding: 0.5em; vertical-align: top; font-style: italic; }
+}
+
+circle.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+line.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+
+/*
+  Ploo, ploo, white and blue. 
+  I do love you true.
+*/

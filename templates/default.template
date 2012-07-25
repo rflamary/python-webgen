@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{{ lang }}">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="{{ website_subname }}"/>
+    <meta name="author" content="{{ website_author }}" />
+    <meta name="generator" content="python-webgen" />
+    <link rel="stylesheet" type="text/css" href="{{ reloc }}default.css" />
+    {% block title %}    
+    <title>{{ website_name }} / {{ title }}</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div id="page">
+
+        <div id="header">
+		    <div id="headerimg">
+		    <h1><a href="{{ website_url }}">{{ website_name }}</a></h1>
+		    <div class="description">{{ website_subname }}</div>
+	    </div>
+
+         <!--<h1>{title: }</h1>-->
+        </div>
+
+        <div id="headerbar" class="bar">
+         <!-- <span class="left">Location: </span>-->
+          
+          <div style="clear:both"></div>
+        </div>
+    <hr />
+
+
+    <div id="content">
+	{% block content %}
+	<h2>{{ title }}</h2><div class="textwidget">
+
+    </div>
+	    {{ content }}
+	{% endblock %} 
+    </div>
+
+    <div id="sidebar"> 
+           <!-- <h2 class="widgettitle">Language</h2>-->
+        <span class="right">{{ langbar }}</span>
+
+        <br/>
+        <h2 class="widgettitle">Pages</h2>
+
+              {{ menu }}
+
+
+        <br/>
+
+        <h2 class="widgettitle">Links</h2>
+        <div class="entry">
+	        {{ links }}
+
+        </div>
+
+
+    </div>
+
+
+
+    </div>
+
+    <div id="footer">
+    <!-- Position: {breadcrumb_trail: } -->
+    </div>
+
+
+
+  </body>
+</html>
