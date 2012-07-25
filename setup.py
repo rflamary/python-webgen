@@ -2,10 +2,10 @@
 
 from distutils.core import setup
 import os
-import remtime
+import glob
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
-README = open(os.path.join(ROOT, 'README')).read()
+README = open(os.path.join(ROOT, 'README.md')).read()
 
 setup(name='python-webgen',
       version='0.1',
@@ -18,6 +18,7 @@ setup(name='python-webgen',
       platforms=['linux'],
       license = 'GPL',
       scripts=['scripts/webgen.py'],
+      data_files=[('', ['config.cfg','README.md'])],
       requires=["argparse (>=0.1)","configobj (>=4.7)","jinja2 (>= 2.6)","markdown (>= 2.1)"],
     classifiers=[
         'Development Status :: 4 - Beta',
