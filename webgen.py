@@ -381,7 +381,7 @@ class website:
                 os.mkdir(path)  
                 
         for page in self.pagelist:
-            print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
+            #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
             page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
             #print page['raw_page']
             f=codecs.open(self.outdir+os.sep+page['filename']+'.html',mode='w', encoding="utf8")
@@ -390,7 +390,7 @@ class website:
 
         if self.config['General']['generate_posts']=='True':
             for page in self.postlist:
-                print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
+                #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
                 page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,postlist_lan=self.postlist_lan,ext=self.ext,postlist=self.postlist,**page)
                 #print page['raw_page']
                 f=codecs.open(self.outdir+os.sep+page['filename']+'_post'+'.html',mode='w', encoding="utf8")
@@ -400,11 +400,16 @@ class website:
         for pattern in self.config['Pattern']['Copy']['list']:
             for files in glob.glob(self.srcdir+os.sep+pattern):
                 file2=files.replace(self.srcdir,self.outdir)
-                shutil.copy(files,file2)
+                # copy only if modified or not exists
+                if not os.path.isfile(file2):
+                    shutil.copy(files,file2)
+                elif os.path.getmtime(file2)<os.path.getmtime(files):
+                    shutil.copy(files,file2)
+                        
                 
         # sitemap
         if self.config['General']['generate_sitemap']:
-            print "Generating sitemap for {nb} pages".format(nb=len(self.pagelist))
+            #print "Generating sitemap for {nb} pages".format(nb=len(self.pagelist))
             smap=u'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
             smap+=get_sitemap_url(self.config['General']['base_url'],'weekly',lastmod=datetime.date.today().isoformat(),priority=1)
             for page in self.pagelist:
