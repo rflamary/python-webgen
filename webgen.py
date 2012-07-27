@@ -8,7 +8,7 @@ Created on Sun Jul 22 11:06:43 2012
 
 import configobj, jinja2, sys, argparse, glob
 import os, fnmatch, markdown, codecs, shutil
-import datetime
+import datetime, imp
 
 c_file='config.cfg'
 
@@ -39,11 +39,22 @@ uselangbar=boolean(default=True)
 separator=string(default='')
 [[__many__]]
 text=string(default='')
+[Plugins]
+list=list(default=list())
+folder='plugins'
+[[__many__]]
 [Pattern]
 [[Copy]]
 list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
+def import_(filename):
+    (path, name) = os.path.split(filename)
+    (name, ext) = os.path.splitext(name)
+
+    (file, filename, data) = imp.find_module(name, [path])
+    return imp.load_module(name, file, filename, data)
+    
 # properties for pages if not set
 lst_prop_init=[['langbar',''],
                ['menu',''],
@@ -85,7 +96,7 @@ def load_config(c_file):
     Safe config file loading function
     """
     try:
-        config=configobj.ConfigObj(c_file,configspec=c_file_spec.split('\n'))
+        config=configobj.ConfigObj(c_file,configspec=c_file_spec.split('\n'), encoding='UTF8')
     except configobj.ParseError:
         config=None         
     return config
@@ -206,6 +217,10 @@ class website:
         
         self.templates=dict()
         
+        # list of plugins
+        self.plugs=list()      
+        
+        
         # dictionnary that will be used in extensions (ext passed to jinja templates)
         self.ext=dict()
         
@@ -213,7 +228,29 @@ class website:
         
         self.load_website()
         
+        self.load_plugins()
+        
         self.get_menus_langbar()
+        
+        
+    def load_plugins(self):
+        """
+        load the plugins listed in config['Plugins']['list'] with imp
+        """
+        for pname in self.config['Plugins']['list']:
+            self.plugs.append(import_(self.config['Plugins']['folder']+os.sep+pname))
+            
+    def apply_plugins(self):
+        """
+        apply for eacg plugins the functions:
+            - plugin_change_lists(website) that modifies the list of pages and posts
+            - plugin_return(config) that returns a plugin info in ext[pluginname] 
+            (ext is available in the templates)
+        """
+        for mod in self.plugs:
+            mod.plugin_change_lists(self)
+            self.ext[mod.plug_name]=mod.plugin_return(self.config)
+            
         
     def set_links_to_lang(self):
         #print page['raw_text']
@@ -226,7 +263,15 @@ class website:
                     #print page['raw_text'].find(ptemp['filename_nolang']+'.html')
                     page['raw_text']=page['raw_text'].replace(ptemp['filename_nolang']+'.html',ptemp['filename_nolang']+'.'+s+'.html')
             #print page['raw_text']
-
+            
+        for page in self.postlist:
+            s=self.get_langage_str(page['lang'])
+            if not s=='':            
+                for ptemp in self.pagelist:  
+                    #print ptemp['filename_nolang']+'.html'
+                    #print ptemp['filename_nolang']+'.'+s+'.html'
+                    #print page['raw_text'].find(ptemp['filename_nolang']+'.html')
+                    page['raw_text']=page['raw_text'].replace(ptemp['filename_nolang']+'.html',ptemp['filename_nolang']+'.'+s+'.html')
         
         
     def get_pages_content(self):
@@ -372,6 +417,9 @@ class website:
         # generate pages content using the selcted makup langage
         self.get_pages_content()
         
+        # apply plugins
+        self.apply_plugins()
+        
         # check existing directories in output
         if not os.path.isdir(self.outdir):
             os.mkdir(self.outdir)
@@ -449,6 +497,16 @@ class website:
         
         self.links=self.get_links()
         
+        # preparing templates (in dictionnary)
+        self.env= jinja2.Environment(loader=jinja2.FileSystemLoader(self.templdir))
+        for template in recursiveglob(self.templdir,'*.template'):
+            template=template.replace(self.templdir+os.sep,'')
+            (head, tail)=os.path.split(template)
+            (root, ext)=os.path.splitext(tail)
+            temp=self.env.get_template(template)
+            self.templates[root]=temp 
+            
+            
         # loading pages
         for page in recursiveglob(self.srcdir,'*.page'):
             temp=dict()
@@ -464,10 +522,8 @@ class website:
 
             # langage extraction
             temp['lang'],temp['filename_nolang']=get_page_langage(temp['relscrname'],self.config['General']['lang'])  
-            if len(self.get_langage_str(temp['lang'])):
-                temp['template']=self.config['General']['default_template']+'.'+self.get_langage_str(temp['lang'])
-            else:
-                temp['template']=self.config['General']['default_template']
+
+            temp['template']=self.config['General']['default_template']
             
             # relative position in the website
             nbdir=temp['relscrname'].count('/')
@@ -489,6 +545,11 @@ class website:
             #print temp
             # get properties from file
             get_page_properties(temp,temp['raw_file'])
+            
+            if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
+                temp['template']=temp['template']+'.'+self.get_langage_str(temp['lang'])
+          
+            
             temp['raw_text']=temp['raw_text'].replace('](/','](' +temp['reloc'])
             #print temp
   
@@ -512,11 +573,9 @@ class website:
 
             # langage extraction
             temp['lang'],temp['filename_nolang']=get_page_langage(temp['relscrname'],self.config['General']['lang'])  
-            if len(self.get_langage_str(temp['lang'])):
-                temp['template']=self.config['General']['default_template']+'.'+self.get_langage_str(temp['lang'])
-            else:
-                temp['template']=self.config['General']['default_template']
             
+            temp['template']=self.config['General']['default_template']            
+
             # relative position in the website
             nbdir=temp['relscrname'].count('/')
             for i in range(nbdir):
@@ -535,6 +594,11 @@ class website:
             #print temp
             # get properties from file
             get_page_properties(temp,temp['raw_file'])
+            
+            if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
+                temp['template']=temp['template']+'.'+self.get_langage_str(temp['lang'])
+            
+            
             temp['raw_text']=temp['raw_text'].replace('](/','](' +self.config['General']['base_url'])
             
             self.postlist.append(temp)      
@@ -543,14 +607,7 @@ class website:
         
         
         
-        # preparing templates (in dictionnary)
-        self.env= jinja2.Environment(loader=jinja2.FileSystemLoader(self.templdir))
-        for template in recursiveglob(self.templdir,'*.template'):
-            template=template.replace(self.templdir+os.sep,'')
-            (head, tail)=os.path.split(template)
-            (root, ext)=os.path.splitext(tail)
-            temp=self.env.get_template(template)
-            self.templates[root]=temp
+
 
             
 
