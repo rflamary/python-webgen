@@ -9,6 +9,7 @@ try:
     from pybtex.database.input import bibtex
 except ImportError:
     bibtex=None 
+    print "bibtex plugin: pybtex not installed, no ref list will be generated"
 
 # name of the plugin
 plug_name='bibtex'
