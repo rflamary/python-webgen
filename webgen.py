@@ -48,25 +48,40 @@ folder='plugins'
 list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
-def import_(filename):
-    (path, name) = os.path.split(filename)
-    (name, ext) = os.path.splitext(name)
-
-    (file, filename, data) = imp.find_module(name, [path])
-    return imp.load_module(name, file, filename, data)
-    
 # properties for pages if not set
 lst_prop_init=[['langbar',''],
                ['menu',''],
                ['reloc',''],
                ['sort_info',0],
                ['in_menu','false'],
+               ['in_sitemap','true'],
                ['sitemap_priority',.5],
                ['sitemap_frequency','weekly']]
-
+               
+def to_bool(string):
+    """
+    crapy str to boolean conversion function to stay compatible with webgen
+    """
+    if string=='true' or string=='True' or string=='1':
+        return True
+    else:
+        return False
+        
 # list of convertion perormed after page loading
 lst_prop_convert=[['sort_info',int],
-                  ['sitemap_priority',float]]
+                  ['sitemap_priority',float],
+                  ['in_menu',to_bool],     
+                  ['in_sitemap',to_bool],             
+                    ]
+                  
+
+                  
+def import_(filename):
+    (path, name) = os.path.split(filename)
+    (name, ext) = os.path.splitext(name)
+
+    (file, filename, data) = imp.find_module(name, [path])
+    return imp.load_module(name, file, filename, data)                 
                   
 def init_page_properties(page):
     """
@@ -311,7 +326,7 @@ class website:
             menulist=list()
             for i in range(len(self.pagelist)):
                 page=self.pagelist[i]
-                if page['lang']== lang and page['in_menu'] == 'true' :
+                if page['lang']== lang and page['in_menu'] :
                     menulist.append(i)
             # for all pages
             for i in range(len(self.pagelist)):
@@ -461,7 +476,8 @@ class website:
             smap=u'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
             smap+=get_sitemap_url(self.config['General']['base_url'],'weekly',lastmod=datetime.date.today().isoformat(),priority=1)
             for page in self.pagelist:
-                smap+=get_sitemap_url(self.config['General']['base_url']+page['filename']+'.html',lastmod=page['date'])
+                if page['in_sitemap']:
+                    smap+=get_sitemap_url(self.config['General']['base_url']+page['filename']+'.html',lastmod=page['date'])
             smap+='</urlset>'
             f=codecs.open(self.outdir+os.sep+'sitemap'+'.xml',mode='w', encoding="utf8")
             f.write(smap)
