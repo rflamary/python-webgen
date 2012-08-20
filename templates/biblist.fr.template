@@ -1,0 +1,68 @@
+{% extends "default.fr.template" %}
+
+{% block title %}
+    <title>{{ website_name }} / {{ title }} </title>
+    <script type="text/javascript" src="{{ reloc }}bibsearch.js"></script>
+{% endblock %}
+
+  
+ {% block content %} 
+	<h2>{{ title }}</h2><div class="textwidget">
+
+    </div>
+    
+    {{ content }}
+       
+<table border="1" id="qstable"> 
+ <tbody> 
+	{% for ref in ext['bibtex'] %}
+ <tr class="entry" id="{{ ref['key'] }}"> 
+ <td>{{ ref['author'] }}, <b>"{{ ref['title'] }}"</b>{% if not ref['journalproc']=='' %}, {{ ref['journalproc'] }}{% endif %}{% if not ref['volnumpage']=='' %}, {{ ref['volnumpage'] }}{% endif %}, {{ ref['year'] }}. 
+ <p class="infolinks">
+ {% if not ref['abstract']=='' %}
+ <a href="javascript:toggleInfo('{{ ref['key'] }}','abstract')">[Abstract]</a> 
+ {% endif %} 
+ <a href="javascript:toggleInfo('{{ ref['key'] }}','bibtex')">[BibTeX]</a> 
+  {% if not ref['url']=='' %}
+ <a href="{{ ref['url'] }}">[URL]</a> 
+  {% endif %} 
+   {% if not ref['pdf']=='' %} 
+ <a href="{{ ref['pdf'] }}">[PDF]</a> 
+   {% endif %} 
+   {% if not ref['pres']=='' %}
+ <a href="{{ ref['pres'] }}">[Slides]</a> 
+    {% endif %} 
+   {% if not ref['code']=='' %}
+ <a href="{{ ref['code'] }}">[Code]</a> 
+    {% endif %} 
+ </p> 
+ </td> 
+ </tr> 
+<tr class="abstract noshow" id="abs_{{ ref['key'] }}"> 
+ <td><b>Abstract</b>: {{ ref['abstract'] }}</td> 
+ </tr> 
+<tr class="bibtex noshow" id="bib_{{ ref['key'] }}"> 
+ <td><b>BibTeX</b>:
+ <pre> @{{ ref['type'] }}{ {{ ref['key'] }},
+ author = { {{ ref['author'] }} },
+ title = { {{ ref['title'] }} }, 
+ {% if not ref['journal']=='' %}journal = { {{ ref['journal'] }} },
+ {% endif %}{% if not ref['volume']=='' %}volume = { {{ ref['volume'] }} },
+ {% endif %}{% if not ref['number']=='' %}number = { {{ ref['number'] }} },
+ {% endif %}{% if not ref['pages']=='' %}pages = { {{ ref['pages'] }} },
+ {% endif %}{% if not ref['booktitle']=='' %}booktitle = { {{ ref['booktitle'] }} },
+ {% endif %}{% if not ref['howpublished']=='' %}howpublished = { {{ ref['howpublished'] }} }, 
+ {% endif %}{% if not ref['organization']=='' %}organization = { {{ ref['organization'] }} }, 
+ {% endif %}{% if not ref['institution']=='' %}institution = { {{ ref['institution'] }} },
+ {% endif %}{% if not ref['school']=='' %}school = { {{ ref['school'] }} },
+ {% endif %}year = { {{ ref['year'] }} } 
+ } </pre>
+</td> 
+ </tr> 
+ 
+	{% endfor %}
+
+ </tbody> 
+</table> 
+{% endblock %}
+   
