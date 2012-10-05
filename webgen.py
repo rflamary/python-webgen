@@ -239,7 +239,7 @@ class website:
         # dictionnary that will be used in extensions (ext passed to jinja templates)
         self.ext=dict()
         
-        self.md = markdown.Markdown()
+        self.md = markdown.Markdown(extensions=self.config['General']['markdown_extensions'])
         
         self.load_website()
         
@@ -624,7 +624,10 @@ class website:
         
         
 
-
+def init(config):
+    
+    sys.path.append('md_extensions')
+    
             
 
                  
@@ -645,11 +648,14 @@ def main(argv):
     
     config=load_config(args.configfile)
     
+
+    
     if config==None:
         print 'bad config file format'
     elif not config:
         print 'no config file'       
     else:
+        init(config)
         site=website(args.configfile)
         site.generate_website()
 
