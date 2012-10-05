@@ -56,7 +56,8 @@ lst_prop_init=[['langbar',''],
                ['in_menu','false'],
                ['in_sitemap','true'],
                ['sitemap_priority',.5],
-               ['sitemap_frequency','weekly']]
+               ['sitemap_frequency','weekly'],
+               ['publist','']]
                
 def to_bool(string):
     """
@@ -67,11 +68,15 @@ def to_bool(string):
     else:
         return False
         
+def to_list(string):
+	return string.split(',')
+        
 # list of convertion perormed after page loading
 lst_prop_convert=[['sort_info',int],
                   ['sitemap_priority',float],
                   ['in_menu',to_bool],     
-                  ['in_sitemap',to_bool],             
+                  ['in_sitemap',to_bool],       
+                  ['publist',to_list],     
                     ]
                   
 
