@@ -1,0 +1,18 @@
+---
+title: Math page
+in_menu: true
+sort_info: 0
+---
+
+I always wanted to put some maths in my web pages:
+
+here it is with quick math $\mathbf{w}$:
+
+
+%
+\begin{equation*}
+\min_{\mathbf{w},b}\sum_{i=1}^n\max(0,1-y_i(\mathbf{x}_i^T\mathbf{w}+b))^2+\Omega(\mathbf{w})
+\end{equation*}
+%
+
+Do you know what it is?
