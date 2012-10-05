@@ -13,12 +13,17 @@ Webgen.py is a Python version of the well known [webgen](http://webgen.rubyforge
 * Provides a coarse blog post handler (posts can be printed through template loops, no tags yet)
 * All properties set in the .page header can be used in the template
 * Links list and language menu configurable in the config file
-* Website sitemap.xml automatically generated (list of pages ad not of posts)
+* Website sitemap.xml automatically generated (list of pages and not of posts)
 * Easy python plugin in subfolder (no system installation needed)
 
 Plugins:
 
 * Automatic reference page generation from bibtex file (bibtex plugin)
+
+Markdown plugins:
+
+* Can be used (when listed in config file) from subfolder mdextensions.
+* Can use latex formulas with 'latex' extension but requires latex and dvipng 
 
 
 Less desirable features:
@@ -39,9 +44,9 @@ The file webgen.py is self content but some python modules are required:
 * markdown (>= 2.1)
 * pybtex (>= 0.15) (for bibtex plugin)
 
-Those can be easily installed on debian-like linux with:
+Those can be easily installed on debian-based linux with:
 
-	apt-get install python-argparse python-configobj python-jinja2 python-markdown
+	apt-get install python-argparse python-configobj python-jinja2 python-markdown (pybtex)
 	
 	
 ### Testing
@@ -52,9 +57,11 @@ The github repository contains a demo website with:
 * *templates* folder containing templates for the demo website
 * *src* source architecture and content for the website
 
-execute webgen.py in the folder for generating the website in the *out* folder:
+Execute webgen.py in the folder for generating the website in the *out* folder:
 
 	$ ./webgen.py
+	
+The markdown 'latex' extension is not used by default, to activate it, add 'latex' to markdown extensions in the configuration file.	
 	
 ## Documentation
 
