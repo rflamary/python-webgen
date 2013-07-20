@@ -61,11 +61,16 @@ def zorg_word(word):
         else:
             word=word[::-1]
     return word
-
+    
 def plugin_change_lists(website):
     """
-    function that adds information to website.pagelist
-    and website.postlist
+    function that can modify the whole website (before content generation)
+    """
+    pass        
+
+def plugin_change_lists_post(website):
+    """
+    function that can modify the whole website (after content generation)
     """
     #print len(website.pagelist)
     ptemp=list()

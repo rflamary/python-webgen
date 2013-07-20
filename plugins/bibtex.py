@@ -114,21 +114,25 @@ def load_bibfile(fname,recentyears=3):
     
     return bib
 
-def plugin_change_lists(website):
-    """
-    function that adds information to website.pagelist
-    and website.postlist
-    """
-    pass
+
 
 def plugin_return(config):
     """
-    returns the plugin 
+    returns the plugin after website loading and store the data in ext['plugname'] for use in template
     """
     fname=   config['Plugins'][plug_name]['bibfile']
     res=load_bibfile(fname)
     return res
     
+def plugin_change_lists(website):
+    """
+    function that can modify the whole website (before content generation)
+    """
+    pass    
     
-    
-    
+def plugin_change_lists_post(website):
+    """
+    function that can modify the whole website (after content generation)
+    """
+    pass    
+        

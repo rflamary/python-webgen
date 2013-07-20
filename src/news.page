@@ -2,12 +2,18 @@
 title: News
 in_menu: true
 sort_info: 1
-template: news
 ---
 
 List of posts:
 
 
+{% for post in postlist %}
+{%- if post['lang']==lang -%}
+<h3>{{ post['title'] }}</h3>
+<pre><code>{{ post['date'] }}</code></pre>
+{{ post['content'] }}
+{% endif %}   
+{% endfor %}
 
 
 

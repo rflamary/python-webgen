@@ -270,7 +270,17 @@ class website:
         for mod in self.plugs:
             mod.plugin_change_lists(self)
             self.ext[mod.plug_name]=mod.plugin_return(self.config)
-            
+
+    def apply_plugins_post(self):
+        """
+        apply for eacg plugins the functions:
+            - plugin_change_lists(website) that modifies the list of pages and posts
+            - plugin_return(config) that returns a plugin info in ext[pluginname] 
+            (ext is available in the templates)
+        """
+
+        for mod in self.plugs:
+            mod.plugin_change_lists_post(self)
         
     def set_links_to_lang(self):
         #print page['raw_text']
@@ -302,13 +312,19 @@ class website:
         
         #TODO other markup langage (piece of cake)
         
-        for page in self.pagelist:            
-            if page['markup']=='markdown':               
-                page['content']=self.md.convert(page['raw_text'])
         
-        for page in self.postlist:            
+        
+        for page in self.pagelist:      
+            temp=self.env.from_string(page['raw_text'])
+            page['pre_content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
             if page['markup']=='markdown':               
-                page['content']=self.md.convert(page['raw_text'])  
+                page['content']=self.md.convert(page['pre_content'])
+        
+        for page in self.postlist:
+            temp=self.env.from_string(page['raw_text'])
+            page['pre_content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
+            if page['markup']=='markdown':               
+                page['content']=self.md.convert(page['pre_content'])  
                 
     def get_menus_langbar(self):
         """
@@ -359,9 +375,9 @@ class website:
         for j in menulist:
             page=self.pagelist[j]
             if j==i:
-                res+=u'\t\t<li class="{classe}"><span>{title}</span></li>\n'.format(classe=self.config['Menu']['class_li_current'],title=page['title'])
+                res+=u'\t\t<{li} class="{classe}"><span>{title}</span></{li}>\n'.format(classe=self.config['Menu']['class_li_current'],title=page['title'],li=self.config['Menu']['li'])
             else:
-                res+=u'\t\t<li class="{classe}"><a href="{adress}.html">{title}</a></li>'.format(classe=self.config['Menu']['class_li_other'],title=page['title'],adress=rel+page['filename'])
+                res+=u'\t\t<{li} class="{classe}"><a href="{adress}.html">{title}</a></{li}>'.format(classe=self.config['Menu']['class_li_other'],title=page['title'],adress=rel+page['filename'],li=self.config['Menu']['li'])
         res+="</ul>\n"
         return res
         
@@ -433,11 +449,14 @@ class website:
             - cappy all files corresponding to the patterns
             - generate sitemap is required
         """
+
+        # apply plugins
+        self.apply_plugins()
         
         # generate pages content using the selcted makup langage
         self.get_pages_content()
         
-        # apply plugins
+        # apply plugins after content generation
         self.apply_plugins()
         
         # check existing directories in output
