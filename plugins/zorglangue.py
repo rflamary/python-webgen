@@ -78,6 +78,8 @@ def plugin_change_lists_post(website):
     for page in website.pagelist:
         if page['lang']=='fr':
             
+           
+            
             adress=page['filename_nolang']
             text=website.config['LangBar'][lang]['text'].format(reloc=page['reloc'])
             page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['LangBar']['separator']))

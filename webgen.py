@@ -311,7 +311,11 @@ class website:
         """
         
         #TODO other markup langage (piece of cake)
-        
+        for page in self.postlist:
+            temp=self.env.from_string(page['raw_text'])
+            page['pre_content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
+            if page['markup']=='markdown':               
+                page['content']=self.md.convert(page['pre_content'])          
         
         
         for page in self.pagelist:      
@@ -320,11 +324,7 @@ class website:
             if page['markup']=='markdown':               
                 page['content']=self.md.convert(page['pre_content'])
         
-        for page in self.postlist:
-            temp=self.env.from_string(page['raw_text'])
-            page['pre_content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
-            if page['markup']=='markdown':               
-                page['content']=self.md.convert(page['pre_content'])  
+
                 
     def get_menus_langbar(self):
         """
@@ -457,7 +457,7 @@ class website:
         self.get_pages_content()
         
         # apply plugins after content generation
-        self.apply_plugins()
+        self.apply_plugins_post()
         
         # check existing directories in output
         if not os.path.isdir(self.outdir):
