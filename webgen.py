@@ -324,7 +324,20 @@ class website:
             if page['markup']=='markdown':               
                 page['content']=self.md.convert(page['pre_content'])
         
-
+      
+#        for page in self.postlist:
+#            if page['markup']=='markdown':               
+#                page['pre_content']=self.md.convert(page['raw_text'])          
+#            temp=self.env.from_string(page['pre_content'])
+#            page['content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
+#                    
+#        
+#        for page in self.pagelist:      
+#            if page['markup']=='markdown':               
+#                page['pre_content']=self.md.convert(page['raw_text'])          
+#            temp=self.env.from_string(page['pre_content'])
+#            page['content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
+#       
                 
     def get_menus_langbar(self):
         """
