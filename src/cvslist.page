@@ -1,0 +1,19 @@
+---
+title: List from csv file
+in_menu: true
+sort_info: 3
+---
+
+List of awesome vilains:
+
+
+
+<div class="entry">
+<ul>
+	{% for ref in ext['csvload'][0] %}
+ 
+ <li>{{ ref[0] }}</a>, {{ ref[1] }}</li>
+	{% endfor %}
+
+</ul></div>
+

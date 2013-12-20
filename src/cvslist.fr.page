@@ -1,0 +1,19 @@
+---
+title: Liste à partir d'un fichier cvs
+in_menu: true
+sort_info: 3
+---
+
+Liste de super méchants:
+
+
+
+<div class="entry">
+<ul>
+	{% for ref in ext['csvload'][0] %}
+ 
+ <li>{{ ref[0] }}</a>, {{ ref[1] }}</li>
+	{% endfor %}
+
+</ul></div>
+
