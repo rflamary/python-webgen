@@ -5,7 +5,7 @@ Created on Thu Jul 26 13:41:48 2012
 @author: flam
 """
 import datetime
-
+import codecs
 
 # name of the plugin
 plug_name='csvload'
@@ -20,7 +20,7 @@ def load_csv_files(files,sep):
     return res
     
 def load_csv(fname,sep):
-    f = open(fname, 'r')
+    f = codecs.open(fname, "r", "utf-8")
 
     res=list()
     
