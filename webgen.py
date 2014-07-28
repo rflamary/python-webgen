@@ -389,15 +389,6 @@ class website:
         res+="</ul>\n"
         return res
         
-    def get_links(self):
-        """
-        get html list of links to be included in the pages
-        """
-        res="<ul>\n"
-        for lnk in self.config['Links']['list']:
-            res+=u'\t\t<li class="{classe}"><a href="{url}" title="{txt}">{txt}</a></li>\n'.format(classe=self.config['Links']['class_li_link'],txt=lnk,url=self.config['Links']['list'][lnk])
-        res+="</ul>\n"        
-        return res
         
     def get_menu_post(self,menulist,i):
         """
@@ -534,7 +525,7 @@ class website:
         
         self.listdir=get_listdir(self.srcdir)
         
-        self.links=self.get_links()
+
         
         self.log("Loading templates:")
         # preparing templates (in dictionnary)
@@ -578,7 +569,7 @@ class website:
             temp['website_subname']=self.config['General']['base_subname']
             temp['website_author']=self.config['General']['base_author']
             temp['website_url']=self.config['General']['base_url']
-            temp['links']=self.links
+
             
             tatbuf = os.stat(page)
             temp['date']=datetime.date.fromtimestamp(tatbuf.st_mtime).isoformat()
