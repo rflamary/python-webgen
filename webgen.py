@@ -151,23 +151,6 @@ def get_page_langage(filename,default='en'):
         lang=lst[-2]
     return lang,lst[0]
     
-def find_page(filename,lst):
-    """
-    check if a page exist in a list of pages (dict)
-    
-    >>> lst=[dict(filename='file'+str(i)) for i in range(10) ]
-    >>> find_page('file3',lst)
-    True
-    >>> find_page('test',lst)
-    False
-    """
-    found=False
-    for page in lst:
-        if page['filename']==filename:
-            found=True
-    return found
-    
-
     
 def get_page_properties(page,raw_file,plugs):
     """
@@ -362,13 +345,13 @@ class website:
                 page=self.pagelist[i]
                 if page['lang'] == lang:
                     page['menu']=self.get_menu(menulist,i) 
-                    page['langbar']=self.get_langbar(i)
+                    #page['langbar']=self.get_langbar(i)
             # for all posts
             for i in range(len(self.postlist)):
                 page=self.postlist[i]
                 if page['lang'] == lang:
                     page['menu']=self.get_menu_post(menulist,i)                    
-                    page['langbar']=self.get_langbar_post(i)
+                    #page['langbar']=self.get_langbar_post(i)
                     postlist_lan[lang].append(page)
         self.postlist_lan=postlist_lan
         
@@ -403,39 +386,6 @@ class website:
         res+="</ul>\n"
         return res
         
-    def get_langbar(self,i):
-        """
-        get the html for the langbar of page i (using reloc to always point well)
-        """
-        res=''
-        page=self.pagelist[i]
-        for lang in self.langlist:
-            if len(self.get_langage_str(lang)):
-                adress=page['filename_nolang']+'.'+self.get_langage_str(lang)
-            else:
-                adress=page['filename_nolang']
-            if find_page(adress,self.pagelist):
-                text=self.config['LangBar'][lang]['text'].format(reloc=page['reloc'])
-                #print '{0}'.format(self.config['LangBar'][lang]['text'])
-                res+=u'<a href="{adress}.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(self.config['LangBar']['separator']))
-        return res
-            
-    def get_langbar_post(self,i):
-        """
-        get the html for the langbar of post i (using reloc to always point well)
-        """        
-        res=''
-        page=self.postlist[i]
-        for lang in self.langlist:
-            if len(self.get_langage_str(lang)):
-                adress=page['filename_nolang']+'.'+self.get_langage_str(lang)
-            else:
-                adress=page['filename_nolang']
-            if find_page(adress,self.postlist):
-                text=self.config['LangBar'][lang]['text'].format(reloc=page['reloc'])
-                #print '{0}'.format(self.config['LangBar'][lang]['text'])
-                res+=u'<a href="{adress}_post.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(self.config['LangBar']['separator']))
-        return res
         
     def generate_website(self):
         """
@@ -446,8 +396,15 @@ class website:
             - all pages are written using the selected template
             - if posts are to be generated, then generate them
             - cappy all files corresponding to the patterns
-            - generate sitemap is required
         """
+
+        # check existing directories in output
+        if not os.path.isdir(self.outdir):
+            os.mkdir(self.outdir)
+        for path in self.listdir:
+            path=path.replace(self.srcdir,self.outdir)
+            if not os.path.isdir(path):
+                os.mkdir(path)  
 
         # apply plugins
         self.log("Apply plugins:")
@@ -461,13 +418,6 @@ class website:
         self.log("Apply plugins post generation:")
         self.apply_plugins_post()
         
-        # check existing directories in output
-        if not os.path.isdir(self.outdir):
-            os.mkdir(self.outdir)
-        for path in self.listdir:
-            path=path.replace(self.srcdir,self.outdir)
-            if not os.path.isdir(path):
-                os.mkdir(path)  
                 
         self.log("Write page:")
         for page in self.pagelist:
@@ -649,9 +599,6 @@ def init(config):
     
     sys.path.append('md_extensions')
     
-            
-
-                 
 
 
 
