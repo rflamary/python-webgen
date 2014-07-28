@@ -9,16 +9,20 @@ Webgen.py is a Python version of the well known [webgen](http://webgen.rubyforge
 * Compatibility with webgen site architecture (.page format).
 * Clean and easy site architecture (one .page file == one html file)
 * More readable configuration file (no more yaml).
-* Jinja2 templates for generation (possibility to simply set a special template per page).
+* Jinja2 templates for generation (selectable per page, templating in page).
 * Provides a coarse blog post handler (posts can be printed through template loops, no tags yet)
 * All properties set in the .page header can be used in the template
-* Links list and language menu configurable in the config file
-* Website sitemap.xml automatically generated (list of pages and not of posts)
+* Modular plugin system ()
 * Easy python plugin in subfolder (no system installation needed)
 
 Plugins:
 
-* Automatic reference page generation from bibtex file (bibtex plugin)
+* Links list configurable in the config file.
+* Language menu.
+* Website sitemap.xml automatically generated.
+* Automatic reference page generation from bibtex file.
+* Print list from csv file.
+* Zorglangue page generation (from french).
 
 Markdown plugins:
 
@@ -42,11 +46,10 @@ The file webgen.py is self content but some python modules are required:
 * configobj (>=4.7)
 * jinja2 (>= 2.6)
 * markdown (>= 2.1)
-* pybtex (>= 0.15) (for bibtex plugin)
 
 Those can be easily installed on debian-based linux with:
 
-	apt-get install python-argparse python-configobj python-jinja2 python-markdown (pybtex)
+	apt-get install python-argparse python-configobj python-jinja2 python-markdown 
 	
 	
 ### Testing

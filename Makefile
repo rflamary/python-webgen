@@ -21,7 +21,7 @@ help:
 htmlview: html view
 
 html: 
-	./webgen.py
+	./webgen.py -v
 
 clean:
 	rm -fr $(OUTPUTDIR)

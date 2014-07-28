@@ -66,7 +66,10 @@ def to_bool(string):
         return False
         
 def to_list(string):
-	return string.split(',')
+    """
+    convert a str separated by ',' to a list
+    """
+    return string.split(',')
         
 # list of convertion perormed after page loading
 lst_prop_convert=[['sort_info',int],
@@ -74,8 +77,11 @@ lst_prop_convert=[['sort_info',int],
                   ['publist',to_list], ]
                   
 
-                  
+
 def import_(filename):
+    """
+    import modules as plugins
+    """
     (path, name) = os.path.split(filename)
     (name, ext) = os.path.splitext(name)
 
@@ -128,8 +134,6 @@ def load_config(c_file):
 def get_page_langage(filename,default='en'):
     """
     get page langage from filename and returns langage and filename without langage
-    
-    truc plus long
     
     >>> get_page_langage('test.fr.page')
     ('fr', 'test')
@@ -209,8 +213,11 @@ def get_listdir(path):
     
 class website:
     
-    def __init__(self,c_file):
+    def __init__(self,c_file,verbose=False):
         
+        self.verbose=verbose
+        
+        self.log("Initialization")
         self.config=load_config(c_file)
         
         self.srcdir=os.path.join(os.getcwd(),self.config['General']['srcdir'])
@@ -229,7 +236,6 @@ class website:
         # list of plugins
         self.plugs=list()      
         
-        
         # dictionnary that will be used in extensions (ext passed to jinja templates)
         self.ext=dict()
         
@@ -237,6 +243,7 @@ class website:
         self.md = markdown.Markdown(extensions=self.config['General']['markdown_extensions'])
 
         # load plugins
+        self.log("Loading plugins:")
         self.load_plugins()
         
         # load teh pages
@@ -244,12 +251,18 @@ class website:
         
         self.get_menus_langbar()
         
+
+    def log(self,txt):
+        if self.verbose:
+            print(txt)
+
         
     def load_plugins(self):
         """
         load the plugins listed in config['Plugins']['list'] with imp
         """
         for pname in self.config['Plugins']['list']:
+            self.log("\t" + pname)
             self.plugs.append(import_(self.config['Plugins']['folder']+os.sep+pname))
             
     def apply_plugins(self):
@@ -260,6 +273,7 @@ class website:
             (ext is available in the templates)
         """
         for mod in self.plugs:
+            self.log("\t" + mod.__name__)
             mod.plugin_change_lists(self)
             self.ext[mod.plug_name]=mod.plugin_return(self.config)
 
@@ -272,6 +286,7 @@ class website:
         """
 
         for mod in self.plugs:
+            self.log("\t" + mod.__name__)            
             mod.plugin_change_lists_post(self)
         
     def set_links_to_lang(self):
@@ -304,33 +319,21 @@ class website:
         
         #TODO other markup langage (piece of cake)
         for page in self.postlist:
+            self.log("\t" + page['filename'])
             temp=self.env.from_string(page['raw_text'])
             page['pre_content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
             if page['markup']=='markdown':               
                 page['content']=self.md.convert(page['pre_content'])          
         
-        
+        self.log("Generate pages:")
         for page in self.pagelist:      
+            self.log("\t" + page['filename'])
             temp=self.env.from_string(page['raw_text'])
             page['pre_content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
             if page['markup']=='markdown':               
                 page['content']=self.md.convert(page['pre_content'])
         
-      
-#        for page in self.postlist:
-#            if page['markup']=='markdown':               
-#                page['pre_content']=self.md.convert(page['raw_text'])          
-#            temp=self.env.from_string(page['pre_content'])
-#            page['content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
-#                    
-#        
-#        for page in self.pagelist:      
-#            if page['markup']=='markdown':               
-#                page['pre_content']=self.md.convert(page['raw_text'])          
-#            temp=self.env.from_string(page['pre_content'])
-#            page['content']=temp.render(page=page,pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
-#       
-                
+               
     def get_menus_langbar(self):
         """
         add the 'menu' and 'langbar' key containt html list to all pages 
@@ -456,12 +459,15 @@ class website:
         """
 
         # apply plugins
+        self.log("Apply plugins:")
         self.apply_plugins()
         
         # generate pages content using the selcted makup langage
+        self.log("Generate posts:")
         self.get_pages_content()
         
         # apply plugins after content generation
+        self.log("Apply plugins post generation:")
         self.apply_plugins_post()
         
         # check existing directories in output
@@ -472,7 +478,9 @@ class website:
             if not os.path.isdir(path):
                 os.mkdir(path)  
                 
+        self.log("Write page:")
         for page in self.pagelist:
+            self.log("\t"+page['filename'])
             #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
             page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
             #print page['raw_page']
@@ -481,7 +489,9 @@ class website:
             f.close()
 
         if self.config['General']['generate_posts']=='True':
+            self.log("Write posts:")
             for page in self.postlist:
+                self.log("\t"+page['filename'])
                 #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
                 page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,postlist_lan=self.postlist_lan,ext=self.ext,postlist=self.postlist,**page)
                 #print page['raw_page']
@@ -489,6 +499,7 @@ class website:
                 f.write(page['raw_page'])
                 f.close()
         
+        self.log("Copy files")
         for pattern in self.config['Pattern']['Copy']['list']:
             for files in glob.glob(self.srcdir+os.sep+pattern):
                 file2=files.replace(self.srcdir,self.outdir)
@@ -499,23 +510,6 @@ class website:
                     shutil.copy(files,file2)
                         
                 
-        # sitemap
-#        if self.config['General']['generate_sitemap']:
-#            #print "Generating sitemap for {nb} pages".format(nb=len(self.pagelist))
-#            smap=u'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-#            smap+=get_sitemap_url(self.config['General']['base_url'],'weekly',lastmod=datetime.date.today().isoformat(),priority=1)
-#            for page in self.pagelist:
-#                if page['in_sitemap']:
-#                    smap+=get_sitemap_url(self.config['General']['base_url']+page['filename']+'.html',lastmod=page['date'])
-#            smap+='</urlset>'
-#            f=codecs.open(self.outdir+os.sep+'sitemap'+'.xml',mode='w', encoding="utf8")
-#            f.write(smap)
-#            f.close()
-             
-
-        
-        
-        #print self.pagelist
 
     def get_langage_str(self,lang):
         """
@@ -542,17 +536,20 @@ class website:
         
         self.links=self.get_links()
         
+        self.log("Loading templates:")
         # preparing templates (in dictionnary)
         self.env= jinja2.Environment(loader=jinja2.FileSystemLoader(self.templdir))
-        for template in recursiveglob(self.templdir,'*.template'):
+        for template in recursiveglob(self.templdir,'*.template'):       
             template=template.replace(self.templdir+os.sep,'')
             (head, tail)=os.path.split(template)
             (root, ext)=os.path.splitext(tail)
+            self.log("\t"+ root)
             temp=self.env.get_template(template)
             self.templates[root]=temp 
             
             
         # loading pages
+        self.log("Loading pages:")
         for page in recursiveglob(self.srcdir,'*.page'):
             temp=dict()
             
@@ -561,7 +558,9 @@ class website:
             # page name extraction
             temp['srcname']=page
             temp['relscrname']=temp['srcname'].replace(self.srcdir+os.sep,'')
+            
             (root, ext)=os.path.splitext(temp['relscrname'])
+            self.log("\t"+ root)
             temp['filename']=root
             temp['markup']=self.config['General']['default_markup']
 
@@ -604,6 +603,7 @@ class website:
         self.set_links_to_lang()
             
         # loading posts
+        self.log("Loading posts:")
         for post in recursiveglob(self.srcdir,'*.post'):
 
             temp=dict()
@@ -613,6 +613,7 @@ class website:
             temp['srcname']=post
             temp['relscrname']=temp['srcname'].replace(self.srcdir+os.sep,'')
             (root, ext)=os.path.splitext(temp['relscrname'])
+            self.log("\t"+ root)
             temp['filename']=root
             temp['markup']=self.config['General']['default_markup']
 
@@ -678,15 +679,13 @@ def main(argv):
     
     config=load_config(args.configfile)
     
-
-    
     if config==None:
         print 'bad config file format'
     elif not config:
         print 'no config file'       
     else:
         init(config)
-        site=website(args.configfile)
+        site=website(args.configfile,verbose=args.verbose)
         site.generate_website()
 
 def test():   
