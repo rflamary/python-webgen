@@ -10,7 +10,7 @@ List of references:
 
 <table border="1" id="qstable"> 
  <tbody> 
-	{% for ref in ext['bibtex2'] %}
+	{% for ref in ext['bibtex'] %}
  <tr class="entry" id="{{ ref['key'] }}"> 
  <td>{{ ref['author'] }}, <b>"{{ ref['title'] }}"</b>{% if not ref['journalproc']=='' %}, {{ ref['journalproc'] }}{% endif %}{% if not ref['volnumpage']=='' %}, {{ ref['volnumpage'] }}{% endif %}, {{ ref['year'] }}. 
  <p class="infolinks">

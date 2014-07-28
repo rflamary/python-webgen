@@ -54,9 +54,6 @@ lst_prop_init=[['langbar',''],
                ['reloc',''],
                ['sort_info',0],
                ['in_menu','false'],
-               ['in_sitemap','true'],
-               ['sitemap_priority',.5],
-               ['sitemap_frequency','weekly'],
                ['publist','']]
                
 def to_bool(string):
@@ -73,11 +70,8 @@ def to_list(string):
         
 # list of convertion perormed after page loading
 lst_prop_convert=[['sort_info',int],
-                  ['sitemap_priority',float],
-                  ['in_menu',to_bool],     
-                  ['in_sitemap',to_bool],       
-                  ['publist',to_list],     
-                    ]
+                  ['in_menu',to_bool],        
+                  ['publist',to_list], ]
                   
 
                   
@@ -88,7 +82,7 @@ def import_(filename):
     (file, filename, data) = imp.find_module(name, [path])
     return imp.load_module(name, file, filename, data)                 
                   
-def init_page_properties(page):
+def init_page_properties(page,plugs):
     """
     Set default page properties values in page dictionnary (to avoid KeyError)
     
@@ -99,6 +93,15 @@ def init_page_properties(page):
     """
     for prop in lst_prop_init:
         page[prop[0]]=prop[1]
+    for mod in plugs:
+        try:
+            #print mod.lst_prop_init
+            for prop in mod.lst_prop_init:
+                page[prop[0]]=prop[1]
+        except AttributeError:
+            pass
+
+        
 
 def recursiveglob(root,pattern):
     """
@@ -160,28 +163,9 @@ def find_page(filename,lst):
             found=True
     return found
     
-def get_sitemap_url(loc,changefreq='weekly',lastmod='',priority=.5):
-    """
-    returns the string for a given url in a sitemap
+
     
-    >>> print get_sitemap_url('test'),
-    <url>
-    <loc>test</loc>
-    <changefreq>weekly</changefreq>
-    </url>
-    """
-    res=u'<url>\n'
-    res+=u'<loc>{0}</loc>\n'.format(loc)
-    res+=u'<changefreq>{0}</changefreq>\n'.format(changefreq)
-    if not lastmod=='':
-        res+=u'<lastmod>{0}</lastmod>\n'.format(lastmod)
-    if not priority==.5:
-        res+=u'<priority>{0}</priority>\n'.format(priority)        
-    res+=u'</url>\n'
-    return res
-    
-    
-def get_page_properties(page,raw_file):
+def get_page_properties(page,raw_file,plugs):
     """
     get page properties from the header of the raw file (list of line)
     
@@ -206,7 +190,12 @@ def get_page_properties(page,raw_file):
     page['raw_text']=''.join(raw_file[imax+1:])
     for prop in lst_prop_convert:
         page[prop[0]]=prop[1](page[prop[0]])    
-    
+    for mod in plugs:
+        try:
+            for prop in mod.lst_prop_convert:
+                page[prop[0]]=prop[1](page[prop[0]])
+        except AttributeError:
+            pass    
     
 def get_listdir(path):
     lst=list()
@@ -244,11 +233,14 @@ class website:
         # dictionnary that will be used in extensions (ext passed to jinja templates)
         self.ext=dict()
         
+        # load markdown extensions
         self.md = markdown.Markdown(extensions=self.config['General']['markdown_extensions'])
-        
-        self.load_website()
-        
+
+        # load plugins
         self.load_plugins()
+        
+        # load teh pages
+        self.load_website()
         
         self.get_menus_langbar()
         
@@ -508,17 +500,17 @@ class website:
                         
                 
         # sitemap
-        if self.config['General']['generate_sitemap']:
-            #print "Generating sitemap for {nb} pages".format(nb=len(self.pagelist))
-            smap=u'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-            smap+=get_sitemap_url(self.config['General']['base_url'],'weekly',lastmod=datetime.date.today().isoformat(),priority=1)
-            for page in self.pagelist:
-                if page['in_sitemap']:
-                    smap+=get_sitemap_url(self.config['General']['base_url']+page['filename']+'.html',lastmod=page['date'])
-            smap+='</urlset>'
-            f=codecs.open(self.outdir+os.sep+'sitemap'+'.xml',mode='w', encoding="utf8")
-            f.write(smap)
-            f.close()
+#        if self.config['General']['generate_sitemap']:
+#            #print "Generating sitemap for {nb} pages".format(nb=len(self.pagelist))
+#            smap=u'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+#            smap+=get_sitemap_url(self.config['General']['base_url'],'weekly',lastmod=datetime.date.today().isoformat(),priority=1)
+#            for page in self.pagelist:
+#                if page['in_sitemap']:
+#                    smap+=get_sitemap_url(self.config['General']['base_url']+page['filename']+'.html',lastmod=page['date'])
+#            smap+='</urlset>'
+#            f=codecs.open(self.outdir+os.sep+'sitemap'+'.xml',mode='w', encoding="utf8")
+#            f.write(smap)
+#            f.close()
              
 
         
@@ -564,7 +556,7 @@ class website:
         for page in recursiveglob(self.srcdir,'*.page'):
             temp=dict()
             
-            init_page_properties(temp)
+            init_page_properties(temp,self.plugs)
             
             # page name extraction
             temp['srcname']=page
@@ -597,7 +589,7 @@ class website:
             f.close()
             #print temp
             # get properties from file
-            get_page_properties(temp,temp['raw_file'])
+            get_page_properties(temp,temp['raw_file'],self.plugs)
             
             if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
                 temp['template']=temp['template']+'.'+self.get_langage_str(temp['lang'])
@@ -615,7 +607,7 @@ class website:
         for post in recursiveglob(self.srcdir,'*.post'):
 
             temp=dict()
-            init_page_properties(temp)
+            init_page_properties(temp,self.plugs)
             
             # page name extraction
             temp['srcname']=post
@@ -646,7 +638,7 @@ class website:
             f.close()
             #print temp
             # get properties from file
-            get_page_properties(temp,temp['raw_file'])
+            get_page_properties(temp,temp['raw_file'],self.plugs)
             
             if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
                 temp['template']=temp['template']+'.'+self.get_langage_str(temp['lang'])
@@ -679,7 +671,8 @@ def main(argv):
     epilog='''''')   
     
     parser.add_argument('-c','--configfile', type=str, nargs=1,
-                   help='the task that should be performed',action="store",default=c_file)                 
+                   help='set the configuration file',action="store",default=c_file) 
+    parser.add_argument('-v','--verbose',help='print information during website generation', action='store_true')
                    
     args= parser.parse_args()   
     
