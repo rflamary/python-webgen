@@ -56,6 +56,8 @@ field_list=['author',
             'file',
             'pdf',            
             'code',
+            'demo',
+            'doi',
             'pres',
             'pubtype']   
             
@@ -112,6 +114,7 @@ def get_biblist(lines):
                     temp=dict() # dictionnary 
                     temp['type']=t.lower()
                     temp['key']=ktemp[0]
+                    #print temp['key']
             else:
                 if l[0]=='}': # closing ref (necessary t)
                     prep_ref(temp)
@@ -121,14 +124,19 @@ def get_biblist(lines):
     
                     if not inkey:    # not locked in an opened key      
                         lst=l.split('=') # separate key and value
-                        key=lst[0].replace(' ','')
+                        
+                        key=lst[0].replace(' ','').lower()
                         val=u''.join(lst[1:])
-                        while val[-1]=='\n' or val[-1]==',' or val[-1]==' ' or val[-1]=='\r':
-                            val=val[:-1]
-                        temp[key]=val
+                        #print '\t',key,val
+                        if len(val)>0:
+                            while val[-1]=='\n' or val[-1]==',' or val[-1]==' ' or val[-1]=='\r':
+                                val=val[:-1]
+                            temp[key]=val
+                            
                         #f.write('\t'+ key + ' : ' + unlatexit(val)+'\n')
                         if not l.count('{')==l.count('}'):
                             opendif=l.count('{')-l.count('}')
+                            val+=' '
                             inkey=True
                     else:
                         val+=l
@@ -137,18 +145,39 @@ def get_biblist(lines):
                             inkey=False
                             while val[-1]=='\n' or val[-1]==',' or val[-1]==' ' or val[-1]=='\r':
                                 val=val[:-1]
-                                temp[key]=val
+                            temp[key]=val
                         else:
                             opendif+=l.count('{')-l.count('}')
                 
     return bib
+    
+def format_bib(bib):
+    for temp in bib:
+            #print temp['type']
+            temp['author_tex']=temp['author']
+            temp['author']=temp['author'].replace(' and ',', ')
+            prep_ref(temp)
+            temp['journalproc']=temp['journal']+temp['booktitle']+temp['howpublished']+temp['school']
+            temp2=''
+            if not temp['volume']=='':
+                temp2+=' Vol. '+temp['volume']+','
+            if not temp['number']=='':
+                temp2+=' N. '+temp['number']+','             
+            if not temp['pages']=='':
+                temp2+=' pp '+temp['pages']+','
+            temp['volnumpage']=temp2[:-1];
+            #print temp
+            if temp['title'][0]==' ':
+                temp['title']=temp['title'][1:]
+            temp['year']=temp['year'].replace(' ','')
+            
 
 def load_bibfile(fname,recentyears=3):
     bib=list()
 
     bib=load_bibfile2(fname)
     #print bib
-
+    format_bib(bib)
     
     year=datetime.date.today().year
     reentyears=list()
@@ -157,9 +186,12 @@ def load_bibfile(fname,recentyears=3):
 
     for temp in bib:
         temp['recentyears']=reentyears
-        #print temp
+        #print temp['key'],temp['type'],temp['year']
         
     bib.sort(key=lambda k: k['year'],reverse=True)
+
+    #for temp in bib:
+    #    print temp['key'],temp['type'],temp['year']
     
     return bib
 

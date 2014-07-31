@@ -7,6 +7,7 @@
     <meta name="author" content="{{ website_author }}" />
     <meta name="generator" content="python-webgen" />
     <link rel="stylesheet" type="text/css" href="{{ reloc }}default.css" />
+    <script type="text/javascript" src="{{ reloc }}bibsearch.js"></script>
     {% block title %}
     <title>{{ website_name }} / {{ title }}</title>
     {% endblock %}
