@@ -49,12 +49,8 @@ list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
 # properties for pages if not set
-lst_prop_init=[['langbar',''],
-               ['menu',''],
-               ['reloc',''],
-               ['sort_info',0],
-               ['in_menu','false'],
-               ['publist','']]
+lst_prop_init=[['reloc',''],
+               ['sort_info',0],]
                
 def to_bool(string):
     """
@@ -72,12 +68,8 @@ def to_list(string):
     return string.split(',')
         
 # list of convertion perormed after page loading
-lst_prop_convert=[['sort_info',int],
-                  ['in_menu',to_bool],        
-                  ['publist',to_list], ]
+lst_prop_convert=[['sort_info',int], ]
                   
-
-
 def import_(filename):
     """
     import modules as plugins
@@ -232,7 +224,7 @@ class website:
         # load teh pages
         self.load_website()
         
-        self.get_menus_langbar()
+        #self.get_menus_langbar()
         
 
     def log(self,txt):
@@ -357,6 +349,28 @@ class website:
                     #page['langbar']=self.get_langbar_post(i)
                     postlist_lan[lang].append(page)
         self.postlist_lan=postlist_lan
+
+    def sel_post_lan(self):
+        """
+        select postlist per language 
+        """
+        
+        # list used langages
+        langlist=list()
+        for page in self.pagelist:
+            if not page['lang'] in langlist:
+                langlist.append(page['lang'])
+
+        postlist_lan=dict()
+        # create list of menus per lang  and per page      
+        for lang in langlist:
+            postlist_lan[lang]=list()
+            # for all posts
+            for i in range(len(self.postlist)):
+                page=self.postlist[i]
+                if page['lang'] == lang:
+                    postlist_lan[lang].append(page)
+        self.postlist_lan=postlist_lan
         
                     
     def get_menu(self,menulist,i):
@@ -437,7 +451,7 @@ class website:
             for page in self.postlist:
                 self.log("\t"+page['filename'])
                 #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
-                page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,postlist_lan=self.postlist_lan,ext=self.ext,postlist=self.postlist,**page)
+                page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,ext=self.ext,postlist=self.postlist,postlist_lan=self.postlist_lan,**page)
                 #print page['raw_page']
                 f=codecs.open(self.outdir+os.sep+page['filename']+'_post'+'.html',mode='w', encoding="utf8")
                 f.write(page['raw_page'])
@@ -530,16 +544,20 @@ class website:
             f= codecs.open(page, mode="r", encoding="utf8")
             temp['raw_file']=f.readlines()
             f.close()
-            #print temp
+
             # get properties from file
             get_page_properties(temp,temp['raw_file'],self.plugs)
+            
+            # test if template exists, if naot, revert
+            if not temp['template'] in self.templates:
+                self.log("Warning: template {} not found reverting to default".format(temp['template']))
+                temp['template']=self.config['General']['default_template']
             
             if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
                 temp['template']=temp['template']+'.'+self.get_langage_str(temp['lang'])
           
             
             temp['raw_text']=temp['raw_text'].replace('](/','](' +temp['reloc'])
-            #print temp
   
             self.pagelist.append(temp)
             
@@ -595,6 +613,7 @@ class website:
             
         self.postlist.sort(key=lambda k: k['date'],reverse=True)    
         
+        self.sel_post_lan()
         
         
 

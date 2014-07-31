@@ -13,6 +13,16 @@ import codecs
 plug_name='bibtex'
 
 
+lst_prop_init=[['publist',''],]
+
+def to_list(string):
+    """
+    convert a str separated by ',' to a list
+    """
+    return string.split(',')
+
+lst_prop_convert=[['publist',to_list], ]
+
 latex_fr=[[u'\\v{',u''],
           [u'\\_',u'_'],
           [u'\\c{c}',u'ç'],
