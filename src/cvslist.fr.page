@@ -17,3 +17,20 @@ Liste de super méchants:
 
 </ul></div>
 
+Sous la forme d'un tableau:
+
+<table style="border:1px">
+	<tr>
+		<th>Nom</th>
+		<th>Alias</th>		
+	</tr>
+		{% for ref in ext['csvload'][0] %}
+ 	<tr>
+		<td>{{ ref[0] }}</td>
+		<td>{{ ref[1] }}</td>		
+	</tr>
+
+
+	{% endfor %}
+
+</table>
