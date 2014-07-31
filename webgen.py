@@ -257,8 +257,9 @@ class website:
         """
         for mod in self.plugs:
             self.log("\t" + mod.__name__)
-            mod.plugin_change_lists(self)
             self.ext[mod.plug_name]=mod.plugin_return(self.config)
+            mod.plugin_change_lists(self)
+            
 
     def apply_plugins_post(self):
         """
@@ -267,12 +268,14 @@ class website:
             - plugin_return(config) that returns a plugin info in ext[pluginname] 
             (ext is available in the templates)
         """
-
         for mod in self.plugs:
             self.log("\t" + mod.__name__)            
             mod.plugin_change_lists_post(self)
         
     def set_links_to_lang(self):
+        """
+        Convert automatically all the link to the current language if the page is available
+        """
         #print page['raw_text']
         for page in self.pagelist:
             s=self.get_langage_str(page['lang'])
@@ -296,7 +299,7 @@ class website:
         
     def get_pages_content(self):
         """
-        get content for each page and posts using slected markup
+        get content for each page and posts using selected markup
         
         """
         
