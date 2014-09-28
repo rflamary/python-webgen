@@ -100,6 +100,38 @@ def load_bibfile2(fname):
     
     return get_biblist(lines)
 
+
+def clean_spaces(txt):
+    if len(txt):
+        while len(txt) and txt[0]==' ':
+            txt=txt[1:]
+        while len(txt) and txt[-1]==' ':
+            txt=txt[:-1]            
+    return txt
+
+def short_name(txt):
+    def get_double(name):
+        return u''.join([nm[0]+'.' for nm in name.split('-')])
+    if '-' in txt:
+        res=u' '.join([get_double(nm) for nm in txt.split(' ')])
+    else:
+        res=u' '.join([nm[0]+'.' for nm in txt.split(' ')])
+    return res
+
+def get_author(txt):
+
+    ls2=list()
+    for aut in txt.split(' and '):
+        if ',' in aut:
+            lst=aut.split(',')
+            ls2.append(lst[0]+', '+short_name(clean_spaces(u' '.join(lst[1:]))))
+        else:
+            lst=aut.split(' ')
+            ls2.append(lst[-1]+', '+short_name(clean_spaces(u' '.join(lst[:-1]))))
+    return u', '.join(ls2)
+    
+    
+
 def get_biblist(lines):
     bib=list()
     
@@ -165,7 +197,7 @@ def format_bib(bib):
     for temp in bib:
             #print temp['type']
             temp['author_tex']=temp['author']
-            temp['author']=temp['author'].replace(' and ',', ')
+            temp['author']=get_author(temp['author'])
             prep_ref(temp)
             temp['journalproc']=temp['journal']+temp['booktitle']+temp['howpublished']+temp['school']
             temp2=''
