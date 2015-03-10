@@ -588,6 +588,8 @@ def init(config):
 
 
 def init_default_website():
+    try:
+        os.mkdir('src')
     pass
 
 
