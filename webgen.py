@@ -229,6 +229,7 @@ class website:
         self.pagelist=list()
         self.postlist=list()
         
+        # list of templates as dictionary
         self.templates=dict()
         
         # list of plugins
@@ -590,7 +591,7 @@ def init(config):
 
 def main(argv):  
 
-    parser = argparse.ArgumentParser(prog='pywebgen',
+    parser = argparse.ArgumentParser(prog='webgen.py',
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
         description='''pywebgen is a python version of the webgen generator''',
     epilog='''''')   
