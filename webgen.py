@@ -80,14 +80,14 @@ def import_(filename):
     (file, filename, data) = imp.find_module(name, [path])
     return imp.load_module(name, file, filename, data)                 
                   
-def init_page_properties(page,plugs):
+def init_page_properties(page,plugs=[]):
     """
     Set default page properties values in page dictionnary (to avoid KeyError)
     
     >>> page= dict()
     >>> init_page_properties(page)
     >>> print page
-    {'menu': '', 'in_menu': 'false', 'sitemap_priority': 0.5, 'sitemap_frequency': 'weekly', 'sort_info': 0, 'langbar': '', 'reloc': ''}
+    { 'sort_info': 0, 'reloc': ''}
     """
     for prop in lst_prop_init:
         page[prop[0]]=prop[1]
@@ -241,7 +241,10 @@ class website:
         """
         for pname in self.config['Plugins']['list']:
             self.log("\t" + pname)
-            self.plugs.append(import_(self.config['Plugins']['folder']+os.sep+pname))
+            try:
+                self.plugs.append(import_(self.config['Plugins']['folder']+os.sep+pname))
+            except ImportError:
+                print("Warning: non-existing plugin '{}'".format(pname))
             
     def apply_plugins(self):
         """
