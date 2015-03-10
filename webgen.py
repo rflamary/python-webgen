@@ -19,7 +19,7 @@ lang=string(max=2,default='en')
 srcdir=string(default='src')
 outdir=string(default='out')
 templdir=string(default='templates')
-default_template=string(default='default')
+default_template=string(default='')
 default_post_template=string(default='default')
 default_markup=string(default='markdown')
 generate_sitemap=boolean(default=True)
@@ -48,8 +48,24 @@ folder='plugins'
 list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
+
+default_template="""
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ title }}</title>
+</head>
+
+<body>
+{{ content }}
+</body>
+
+</html>
+"""
+
 # properties for pages if not set
 lst_prop_init=[['reloc',''],
+               ['title',''],
                ['sort_info',0],]
                
 def to_bool(string):
@@ -165,7 +181,11 @@ def get_page_properties(page,raw_file,plugs):
         imax+=1
     for i in range(imax-1):
         lst=raw_file[i+1].split(': ')
-        page[lst[0]]=lst[1][:-1]
+        if len(lst)>1:
+            page[lst[0]]=lst[1][:-1]
+        else:
+            lst=raw_file[i+1].split(':')
+            print('Warning in page {page}:\n\t Property {prop} is not defined properly "name: value" \n\t For empty property use "name: "'.format(prop=lst[0],page=page['srcname']))
     page['raw_text']=''.join(raw_file[imax+1:])
     for prop in lst_prop_convert:
         page[prop[0]]=prop[1](page[prop[0]])    
@@ -300,7 +320,7 @@ class website:
         get content for each page and posts using selected markup
         
         """
-        
+        self.log("Generate pages:") 
         #TODO other markup langage (piece of cake)
         for page in self.postlist:
             self.log("\t" + page['filename'])
@@ -309,7 +329,7 @@ class website:
             if page['markup']=='markdown':               
                 page['content']=self.md.convert(page['pre_content'])          
         
-        self.log("Generate pages:")
+        
         for page in self.pagelist:      
             self.log("\t" + page['filename'])
             temp=self.env.from_string(page['raw_text'])
@@ -379,7 +399,9 @@ class website:
         for page in self.pagelist:
             self.log("\t"+page['filename'])
             #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
-            page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
+            
+            template=self.templates[page['template']]
+            page['raw_page']=template.render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
             #print page['raw_page']
             f=codecs.open(self.outdir+os.sep+page['filename']+'.html',mode='w', encoding="utf8")
             f.write(page['raw_page'])
@@ -390,7 +412,8 @@ class website:
             for page in self.postlist:
                 self.log("\t"+page['filename'])
                 #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
-                page['raw_page']=self.templates[page['template']].render(pagelist=self.pagelist,ext=self.ext,postlist=self.postlist,postlist_lan=self.postlist_lan,**page)
+                template=self.templates[page['template']]
+                page['raw_page']=template.render(pagelist=self.pagelist,ext=self.ext,postlist=self.postlist,postlist_lan=self.postlist_lan,**page)
                 #print page['raw_page']
                 f=codecs.open(self.outdir+os.sep+page['filename']+'_post'+'.html',mode='w', encoding="utf8")
                 f.write(page['raw_page'])
@@ -434,8 +457,10 @@ class website:
 
         
         self.log("Loading templates:")
+        
         # preparing templates (in dictionnary)
         self.env= jinja2.Environment(loader=jinja2.FileSystemLoader(self.templdir))
+        self.templates['']=self.env.from_string(default_template)
         for template in recursiveglob(self.templdir,'*.template'):       
             template=template.replace(self.templdir+os.sep,'')
             (head, tail)=os.path.split(template)
@@ -489,7 +514,7 @@ class website:
             
             # test if template exists, if naot, revert
             if not temp['template'] in self.templates:
-                self.log("Warning: template {} not found reverting to default".format(temp['template']))
+                print("Warning: template {} not found for page {}, reverting to default".format(temp['template'],page))
                 temp['template']=self.config['General']['default_template']
             
             if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
