@@ -177,6 +177,9 @@ def get_page_properties(page,raw_file,plugs):
             pass    
     
 def get_listdir(path):
+    """
+    list all sub directories without counting the .svn
+    """
     lst=list()
     for dirname, dirnames, filenames in os.walk(path):
         for subdirname in dirnames:
@@ -312,43 +315,6 @@ class website:
                 page['content']=self.md.convert(page['pre_content'])
         
                
-    def get_menus_langbar(self):
-        """
-        add the 'menu' and 'langbar' key containt html list to all pages 
-        """
-        
-        # list used langages
-        langlist=list()
-        for page in self.pagelist:
-            if not page['lang'] in langlist:
-                langlist.append(page['lang'])
-                
-        self.langlist=langlist
-
-
-        postlist_lan=dict()
-        # create list of menus per lang  and per page      
-        for lang in langlist:
-            postlist_lan[lang]=list()
-            menulist=list()
-            for i in range(len(self.pagelist)):
-                page=self.pagelist[i]
-                if page['lang']== lang and page['in_menu'] :
-                    menulist.append(i)
-            # for all pages
-            for i in range(len(self.pagelist)):
-                page=self.pagelist[i]
-                if page['lang'] == lang:
-                    page['menu']=self.get_menu(menulist,i) 
-                    #page['langbar']=self.get_langbar(i)
-            # for all posts
-            for i in range(len(self.postlist)):
-                page=self.postlist[i]
-                if page['lang'] == lang:
-                    page['menu']=self.get_menu_post(menulist,i)                    
-                    #page['langbar']=self.get_langbar_post(i)
-                    postlist_lan[lang].append(page)
-        self.postlist_lan=postlist_lan
 
     def sel_post_lan(self):
         """
@@ -372,36 +338,6 @@ class website:
                     postlist_lan[lang].append(page)
         self.postlist_lan=postlist_lan
         
-                    
-    def get_menu(self,menulist,i):
-        """
-        get html menu with pages selected in menulist for page i (index).
-        the selected page is not a link and has a different il class
-        """
-        res="<ul>\n"
-        rel=self.pagelist[i]['reloc']
-        for j in menulist:
-            page=self.pagelist[j]
-            if j==i:
-                res+=u'\t\t<{li} class="{classe}"><span>{title}</span></{li}>\n'.format(classe=self.config['Menu']['class_li_current'],title=page['title'],li=self.config['Menu']['li'])
-            else:
-                res+=u'\t\t<{li} class="{classe}"><a href="{adress}.html">{title}</a></{li}>'.format(classe=self.config['Menu']['class_li_other'],title=page['title'],adress=rel+page['filename'],li=self.config['Menu']['li'])
-        res+="</ul>\n"
-        return res
-        
-        
-    def get_menu_post(self,menulist,i):
-        """
-        get html menu with pages selected in menulist for post i (index)
-        no pages are select in this case
-        """        
-        res="<ul>\n"
-        rel=self.postlist[i]['reloc']
-        for j in menulist:
-            page=self.pagelist[j]
-            res+=u'\t\t<li class="{classe}"><a href="{adress}.html">{title}</a></li>'.format(classe=self.config['Menu']['class_li_other'],title=page['title'],adress=rel+page['filename'])
-        res+="</ul>\n"
-        return res
         
         
     def generate_website(self):

@@ -99,13 +99,13 @@ def set_menus_langbar(website):
         for i in range(len(website.pagelist)):
             page=website.pagelist[i]
             if page['lang'] == lang:
-                page['menu']=website.get_menu(menulist,i) 
+                page['menu']=get_menu(website,menulist,i) 
                 
         # for all posts
         for i in range(len(website.postlist)):
             page=website.postlist[i]
             if page['lang'] == lang:
-                page['menu']=website.get_menu_post(menulist,i)         
+                page['menu']=get_menu_post(website,menulist,i)         
 
                 
 
