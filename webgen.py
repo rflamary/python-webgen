@@ -583,10 +583,12 @@ class website:
         
 
 def init(config):
-    
     sys.path.append('md_extensions')
     
 
+
+def init_default_website():
+    pass
 
 
 def main(argv):  
@@ -599,6 +601,7 @@ def main(argv):
     parser.add_argument('-c','--configfile', type=str, nargs=1,
                    help='set the configuration file',action="store",default=c_file) 
     parser.add_argument('-v','--verbose',help='print information during website generation', action='store_true')
+    parser.add_argument('-i','--init',help='create simple stater website in the current folder', action='store_true')
                    
     args= parser.parse_args()   
     
@@ -609,9 +612,12 @@ def main(argv):
     elif not config:
         print 'no config file'       
     else:
-        init(config)
-        site=website(args.configfile,verbose=args.verbose)
-        site.generate_website()
+        if config.init:
+            init_default_website()
+        else:
+            init(config)
+            site=website(args.configfile,verbose=args.verbose)
+            site.generate_website()
 
 def test():   
    import doctest

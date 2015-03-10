@@ -12,7 +12,7 @@ Webgen.py is a Python version of the well known [webgen](http://webgen.rubyforge
 * Jinja2 templates for generation (selectable per page, templating in page).
 * Provides a coarse blog post handler (posts can be printed through template loops, no tags yet)
 * All properties set in the .page header can be used in the template
-* Modular plugin system ()
+* Modular plugin system 
 * Easy python plugin in subfolder (no system installation needed)
 
 Plugins:
