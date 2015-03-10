@@ -69,7 +69,8 @@ field_list=['author',
             'demo',
             'doi',
             'pres',
-            'pubtype']   
+            'pubtype',
+	    'submited']   
             
 
 def unlatexit(chaine):
@@ -98,6 +99,8 @@ def load_bibfile2(fname):
     
     lines=f.readlines()
     
+    lines=[l.replace('\t',' ') for l in lines]
+    
     return get_biblist(lines)
 
 
@@ -113,9 +116,9 @@ def short_name(txt):
     def get_double(name):
         return u''.join([nm[0]+'.' for nm in name.split('-')])
     if '-' in txt:
-        res=u' '.join([get_double(nm) for nm in txt.split(' ')])
+        res=u' '.join([get_double(nm) for nm in txt.split(' ') if len(nm)>0])
     else:
-        res=u' '.join([nm[0]+'.' for nm in txt.split(' ')])
+        res=u' '.join([nm[0]+'.' for nm in txt.split(' ') if len(nm)>0])
     return res
 
 def get_author(txt):
@@ -123,14 +126,27 @@ def get_author(txt):
     ls2=list()
     for aut in txt.split(' and '):
         if ',' in aut:
-            lst=aut.split(',')
+            lst=clean_spaces(aut).split(',')
             ls2.append(lst[0]+', '+short_name(clean_spaces(u' '.join(lst[1:]))))
         else:
-            lst=aut.split(' ')
+            lst=clean_spaces(aut).split(' ')
             ls2.append(lst[-1]+', '+short_name(clean_spaces(u' '.join(lst[:-1]))))
-    return u', '.join(ls2)
+    print ls2
+    return u', '.join(ls2),[aut.split(', ')[1]+' '+aut.split(', ')[0] for aut in ls2]
     
-    
+def get_author2(txt):
+
+    ls2=list()
+    for aut in txt.split(' and '):
+        if ',' in aut:
+            lst=clean_spaces(aut).split(',')
+            ls2.append(lst[0]+', '+short_name(clean_spaces(u' '.join(lst[1:]))))
+        else:
+            lst=clean_spaces(aut).split(' ')
+            ls2.append(lst[-1]+', '+short_name(clean_spaces(u' '.join(lst[:-1]))))
+    #print u', '.join(ls2),[aut.split(', ')[0]+' '+aut.split(', ')[1] for aut in ls2] 
+    ls3=[aut.split(', ')[1]+' '+aut.split(', ')[0] for aut in ls2]
+    return u', '.join(ls3),ls3   
 
 def get_biblist(lines):
     bib=list()
@@ -197,7 +213,7 @@ def format_bib(bib):
     for temp in bib:
             #print temp['type']
             temp['author_tex']=temp['author']
-            temp['author']=get_author(temp['author'])
+            temp['author'],temp['author_list']=get_author2(temp['author'])
             prep_ref(temp)
             temp['journalproc']=temp['journal']+temp['booktitle']+temp['howpublished']+temp['school']
             temp2=''
@@ -212,6 +228,7 @@ def format_bib(bib):
             if temp['title'][0]==' ':
                 temp['title']=temp['title'][1:]
             temp['year']=temp['year'].replace(' ','')
+            temp['submited']=clean_spaces(temp['submited'])	
             
 
 def load_bibfile(fname,recentyears=3):
