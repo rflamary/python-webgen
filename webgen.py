@@ -28,6 +28,7 @@ base_name=string(default='')
 base_subname=string(default='')
 base_author=string(default='')
 generate_posts=boolean(default=False)
+[Page]
 [Menu]
 class_li_current=string(default='')
 class_li_other=string(default='')
@@ -61,6 +62,45 @@ default_template="""
 </body>
 
 </html>
+"""
+
+default_config="""
+[General]
+# langage of pages and posts with no lang info
+lang=en
+
+# directories for website source, website output and templates
+srcdir='src'
+outdir='out'
+templdir='templates'
+
+# default templates (when no template is given in the Salut)
+default_template='default'
+default_post_template='default'
+default_markup='markdown'
+markdown_extensions=,
+
+generate_posts=False
+[Page]
+
+[Plugins]
+list=,
+
+[Pattern]
+# patterns for files to copy as is
+[[Copy]]
+list='images/*','*.css','*.js'
+"""
+
+default_page="""---
+title: empty page
+---
+
+# {{ title }}
+
+## Subtitle
+
+empty text
 """
 
 # properties for pages if not set
@@ -497,11 +537,9 @@ class website:
             for i in range(nbdir):
                 temp['reloc']+='../'
                 
-            temp['website_name']=self.config['General']['base_name']
-            temp['website_subname']=self.config['General']['base_subname']
-            temp['website_author']=self.config['General']['base_author']
-            temp['website_url']=self.config['General']['base_url']
-
+            
+            for key in self.config['Page']:
+                temp[key]=self.config['Page'][key]
             
             tatbuf = os.stat(page)
             temp['date']=datetime.date.fromtimestamp(tatbuf.st_mtime).isoformat()
@@ -590,7 +628,24 @@ def init(config):
 def init_default_website():
     try:
         os.mkdir('src')
-    pass
+        os.mkdir('templates')
+        
+        # default page
+        f=open('src/index.page','w')
+        f.write(default_page)
+        f.close()
+
+        f=open('config.cfg','w')
+        f.write(default_config)
+        f.close()     
+        
+        f=open('templates/default.template','w')
+        f.write(default_template)
+        f.close()       
+               
+        
+    except :
+        print("Warning:  already existing files, use empty folder")
 
 
 def main(argv):  
@@ -608,14 +663,13 @@ def main(argv):
     args= parser.parse_args()   
     
     config=load_config(args.configfile)
-    
-    if config==None:
-        print 'bad config file format'
-    elif not config:
-        print 'no config file'       
-    else:
-        if config.init:
-            init_default_website()
+    if args.init:
+        init_default_website()
+    else:    
+        if config==None:
+            print 'bad config file format'
+        elif not config:
+            print 'no config file'       
         else:
             init(config)
             site=website(args.configfile,verbose=args.verbose)
