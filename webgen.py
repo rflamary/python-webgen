@@ -20,11 +20,11 @@ lang=string(max=3,default='en')
 srcdir=string(default='src')
 outdir=string(default='out')
 templdir=string(default='templates')
+plugdir=string(default='plugins')
 default_template=string(default='')
 default_post_template=string(default='')
 default_markup=string(default='markdown')
 plugins=string_list(default=list())
-
 generate_posts=boolean(default=False)
 [Default]
 base_url=string(default='')
@@ -37,17 +37,12 @@ class_li_other=string(default='')
 [Links]
 class_li_link=string(default='')
 [[lists]]
-[LangBar]
+[langbar]
 uselangbar=boolean(default=True)
 separator=string(default='')
 [[__many__]]
 text=string(default='')
-[Plugins]
-list=list(default=list())
-folder=string(default='plugins')
-[[__many__]]
-[Pattern]
-[[Copy]]
+[copy]
 list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
@@ -310,7 +305,7 @@ class website:
         
     def load_plugins(self):
         """
-        load the plugins listed in config['Plugins']['list'] with imp
+        load the plugins listed in config['General']['plugins'] with imp
         """
         for pname in self.config['General']['plugins']:
             self.log("\t" + pname)
@@ -321,7 +316,7 @@ class website:
             
     def apply_plugins(self):
         """
-        apply for eacg plugins the functions:
+        apply for each plugins the functions:
             - plugin_change_lists(website) that modifies the list of pages and posts
             - plugin_return(config) that returns a plugin info in ext[pluginname] 
             (ext is available in the templates)
@@ -334,9 +329,8 @@ class website:
 
     def apply_plugins_post(self):
         """
-        apply for eacg plugins the functions:
-            - plugin_change_lists(website) that modifies the list of pages and posts
-            - plugin_return(config) that returns a plugin info in ext[pluginname] 
+        apply for each plugins the functions:
+            - plugin_change_lists_post(website) that modifies the website after page generation
             (ext is available in the templates)
         """
         for mod in self.plugs:
@@ -424,7 +418,6 @@ class website:
             - content for each page and post is obtained (using specified markup langage)
             - all pages are written using the selected template
             - if posts are to be generated, then generate them
-            - cappy all files corresponding to the patterns
         """
 
         # check existing directories in output
@@ -439,7 +432,7 @@ class website:
         self.log("Apply plugins:")
         self.apply_plugins()
         
-        # generate pages content using the selcted makup langage
+        # generate pages content using the selected makup langage
         self.get_pages_content()
         
         # apply plugins after content generation
@@ -447,7 +440,7 @@ class website:
         self.apply_plugins_post()
         
                 
-        self.log("Write page:")
+        self.log("Write pages:")
         for page in self.pagelist:
             self.log("\t"+page['filename'])
             #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
@@ -471,15 +464,6 @@ class website:
                 f.write(page['raw_page'])
                 f.close()
         
-        self.log("Copy files")
-        for pattern in self.config['Pattern']['Copy']['list']:
-            for files in glob.glob(self.srcdir+os.sep+pattern):
-                file2=files.replace(self.srcdir,self.outdir)
-                # copy only if modified or not exists
-                if not os.path.isfile(file2):
-                    shutil.copy(files,file2)
-                elif os.path.getmtime(file2)<os.path.getmtime(files):
-                    shutil.copy(files,file2)
                         
                 
 

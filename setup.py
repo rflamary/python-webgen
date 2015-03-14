@@ -8,7 +8,7 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README.md')).read()
 
 setup(name='python-webgen',
-      version='0.2',
+      version='0.5',
       description='static website generation',
       long_description=README,
       author=u'Remi Flamary',

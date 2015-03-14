@@ -6,9 +6,7 @@ Created on Thu Jul 26 13:41:48 2012
 """
 
 
-import string
-import copy,codecs,os
-import re,datetime
+import glob,os,shutil
     
 
 lst_prop_init=[]
@@ -19,9 +17,6 @@ lst_prop_convert=[]
 plug_name='copy'
 
 
-     
-
-   
 def plugin_change_lists(website):
     """
     function that can modify the whole website (before content generation)
@@ -43,9 +38,6 @@ def plugin_change_lists_post(website):
                 shutil.copy(files,file2)
             elif os.path.getmtime(file2)<os.path.getmtime(files):
                 shutil.copy(files,file2)
-                            
-    
-
 
 def plugin_return(config):
     """
