@@ -38,8 +38,8 @@ def plugin_return(config):
     """
     returns the plugin after website loading and store the data in ext['plugname'] for use in template
     """
-    files=   config['Plugins'][plug_name]['files']
-    sep=config['Plugins'][plug_name]['sep']
+    files= config[plug_name]['files']
+    sep=   config[plug_name]['sep']
  
     res=load_csv_files(files,sep)
 

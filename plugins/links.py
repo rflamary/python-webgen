@@ -22,8 +22,8 @@ def get_links(config):
     get html list of links to be included in the pages
     """
     res="<ul>\n"
-    for lnk in config['Links']['list']:
-        res+=u'\t\t<li class="{classe}"><a href="{url}" title="{txt}">{txt}</a></li>\n'.format(classe=config['Links']['class_li_link'],txt=lnk,url=config['Links']['list'][lnk])
+    for lnk in config[plug_name]['list']:
+        res+=u'\t\t<li class="{classe}"><a href="{url}" title="{txt}">{txt}</a></li>\n'.format(classe=config[plug_name]['class_li_link'],txt=lnk,url=config[plug_name]['list'][lnk])
     res+="</ul>\n"        
     return res
      

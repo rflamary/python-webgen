@@ -45,9 +45,9 @@ def get_langbar(website,i):
         else:
             adress=page['filename_nolang']
         if find_page(adress,website.pagelist):
-            text=website.config['LangBar'][lang]['text'].format(reloc=page['reloc'])
+            text=website.config[plug_name][lang]['text'].format(reloc=page['reloc'])
             #print '{0}'.format(self.config['LangBar'][lang]['text'])
-            res+=u'<a href="{adress}.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['LangBar']['separator']))
+            res+=u'<a href="{adress}.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config[plug_name]['separator']))
     return res
         
 def get_langbar_post(website,i):
@@ -62,9 +62,9 @@ def get_langbar_post(website,i):
         else:
             adress=page['filename_nolang']
         if find_page(adress,website.postlist):
-            text=website.config['LangBar'][lang]['text'].format(reloc=page['reloc'])
+            text=website.config[plug_name][lang]['text'].format(reloc=page['reloc'])
             #print '{0}'.format(self.config['LangBar'][lang]['text'])
-            res+=u'<a href="{adress}_post.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['LangBar']['separator']))
+            res+=u'<a href="{adress}_post.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config[plug_name]['separator']))
     return res
      
 

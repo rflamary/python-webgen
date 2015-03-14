@@ -80,7 +80,7 @@ def plugin_change_lists_post(website):
             
             adress=page['filename_nolang']
             text=website.config['LangBar'][lang]['text'].format(reloc=page['reloc'])
-            page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['LangBar']['separator']))
+            page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['langbar']['separator']))
             
             temp=copy.deepcopy(page)            
             temp['content']= temp['content'].replace('<',' <')
@@ -101,7 +101,7 @@ def plugin_change_lists_post(website):
             pass
         else:
             adress=page['filename_nolang']
-            text=website.config['LangBar'][lang]['text'].format(reloc=page['reloc'])
+            text=website.config['langbar'][lang]['text'].format(reloc=page['reloc'])
             page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['LangBar']['separator']))
     
     for temp in ptemp:

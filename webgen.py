@@ -9,27 +9,29 @@ Created on Sun Jul 22 11:06:43 2012
 import configobj, jinja2, sys, argparse, glob
 import os, fnmatch, markdown, codecs, shutil
 import datetime, imp
+import validate
 
 c_file='config.cfg'
 
 # config file specifications
 c_file_spec="""
 [General]
-lang=string(max=2,default='en')
+lang=string(max=3,default='en')
 srcdir=string(default='src')
 outdir=string(default='out')
 templdir=string(default='templates')
 default_template=string(default='')
-default_post_template=string(default='default')
+default_post_template=string(default='')
 default_markup=string(default='markdown')
-generate_sitemap=boolean(default=True)
+plugins=string_list(default=list())
+
+generate_posts=boolean(default=False)
+[Default]
 base_url=string(default='')
 base_name=string(default='')
 base_subname=string(default='')
 base_author=string(default='')
-generate_posts=boolean(default=False)
-[Page]
-[Menu]
+[menu]
 class_li_current=string(default='')
 class_li_other=string(default='')
 [Links]
@@ -42,7 +44,7 @@ separator=string(default='')
 text=string(default='')
 [Plugins]
 list=list(default=list())
-folder='plugins'
+folder=string(default='plugins')
 [[__many__]]
 [Pattern]
 [[Copy]]
@@ -174,6 +176,16 @@ def load_config(c_file):
     """
     try:
         config=configobj.ConfigObj(c_file,configspec=c_file_spec.split('\n'), encoding='UTF8')
+        
+        validator=validate.Validator()
+        results = config.validate(validator)
+
+        if results != True:
+            for (section_list, key, _) in configobj.flatten_errors(config, results):
+                if key is not None:
+                    print 'The "%s" key in the section "%s" failed validation' % (key, ', '.join(section_list))
+                else:
+                    print 'The following section was missing:%s ' % ', '.join(section_list)
     except configobj.ParseError:
         config=None         
     return config
@@ -262,8 +274,8 @@ class website:
         self.outdir=os.path.join(os.getcwd(),self.config['General']['outdir'])
         self.templdir=os.path.join(os.getcwd(),self.config['General']['templdir'])
         
-        self.srcdir=self.config['General']['srcdir']
-        self.outdir=self.config['General']['outdir']
+        #self.srcdir=self.config['General']['srcdir']
+        #self.outdir=self.config['General']['outdir']
         
         # lists of page ad posts both passed to jinja templates
         self.pagelist=list()
@@ -300,10 +312,10 @@ class website:
         """
         load the plugins listed in config['Plugins']['list'] with imp
         """
-        for pname in self.config['Plugins']['list']:
+        for pname in self.config['General']['plugins']:
             self.log("\t" + pname)
             try:
-                self.plugs.append(import_(self.config['Plugins']['folder']+os.sep+pname))
+                self.plugs.append(import_(self.config['General']['plugdir']+os.sep+pname))
             except ImportError:
                 print("Warning: non-existing plugin '{}'".format(pname))
             
@@ -361,7 +373,7 @@ class website:
         get content for each page and posts using selected markup
         
         """
-        self.log("Generate pages:") 
+        
         #TODO other markup langage (piece of cake)
         for page in self.postlist:
             self.log("\t" + page['filename'])
@@ -428,7 +440,6 @@ class website:
         self.apply_plugins()
         
         # generate pages content using the selcted makup langage
-        self.log("Generate posts:")
         self.get_pages_content()
         
         # apply plugins after content generation
@@ -538,8 +549,8 @@ class website:
                 temp['reloc']+='../'
                 
             
-            for key in self.config['Page']:
-                temp[key]=self.config['Page'][key]
+            for key in self.config['Default']:
+                temp[key]=self.config['Default'][key]
             
             tatbuf = os.stat(page)
             temp['date']=datetime.date.fromtimestamp(tatbuf.st_mtime).isoformat()
@@ -591,7 +602,7 @@ class website:
             nbdir=temp['relscrname'].count('/')
             for i in range(nbdir):
                 temp['reloc']+='../'
-            temp['reloc']=self.config['General']['base_url']
+            #temp['reloc']=self.config['General']['base_url']
             
 
             tatbuf = os.stat(post)
@@ -609,7 +620,7 @@ class website:
             if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
                 temp['template']=temp['template']+'.'+self.get_langage_str(temp['lang'])
             
-            
+            # use base_url for forced reloc 
             temp['raw_text']=temp['raw_text'].replace('](/','](' +self.config['General']['base_url'])
             
             self.postlist.append(temp)      
@@ -645,7 +656,7 @@ def init_default_website():
                
         
     except :
-        print("Warning:  already existing files, use empty folder")
+        print("Error: already existing files, use empty folder")
 
 
 def main(argv):  
@@ -669,7 +680,7 @@ def main(argv):
         if config==None:
             print 'bad config file format'
         elif not config:
-            print 'no config file'       
+            print 'no config file, using '       
         else:
             init(config)
             site=website(args.configfile,verbose=args.verbose)

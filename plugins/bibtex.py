@@ -260,7 +260,7 @@ def plugin_return(config):
     """
     returns the plugin after website loading and store the data in ext['plugname'] for use in template
     """
-    fname=   config['Plugins'][plug_name]['bibfile']
+    fname=   config[plug_name]['bibfile']
     res=load_bibfile(fname)
     return res
     

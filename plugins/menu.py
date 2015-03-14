@@ -54,9 +54,9 @@ def get_menu(website,menulist,i):
     for j in menulist:
         page=website.pagelist[j]
         if j==i:
-            res+=u'\t\t<{li} class="{classe}"><span>{title}</span></{li}>\n'.format(classe=website.config['Menu']['class_li_current'],title=page['title'],li=website.config['Menu']['li'])
+            res+=u'\t\t<{li} class="{classe}"><span>{title}</span></{li}>\n'.format(classe=website.config[plug_name]['class_li_current'],title=page['title'],li=website.config[plug_name]['li'])
         else:
-            res+=u'\t\t<{li} class="{classe}"><a href="{adress}.html">{title}</a></{li}>'.format(classe=website.config['Menu']['class_li_other'],title=page['title'],adress=rel+page['filename'],li=website.config['Menu']['li'])
+            res+=u'\t\t<{li} class="{classe}"><a href="{adress}.html">{title}</a></{li}>'.format(classe=website.config[plug_name]['class_li_other'],title=page['title'],adress=rel+page['filename'],li=website.config[plug_name]['li'])
     res+="</ul>\n"
     return res
     
@@ -70,7 +70,7 @@ def get_menu_post(website,menulist,i):
     rel=website.postlist[i]['reloc']
     for j in menulist:
         page=website.pagelist[j]
-        res+=u'\t\t<li class="{classe}"><a href="{adress}.html">{title}</a></li>'.format(classe=website.config['Menu']['class_li_other'],title=page['title'],adress=rel+page['filename'])
+        res+=u'\t\t<li class="{classe}"><a href="{adress}.html">{title}</a></li>'.format(classe=website.config[plug_name]['class_li_other'],title=page['title'],adress=rel+page['filename'])
     res+="</ul>\n"
     return res
 
