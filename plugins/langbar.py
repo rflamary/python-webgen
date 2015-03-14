@@ -79,8 +79,11 @@ def plugin_change_lists(website):
             langlist.append(page['lang'])
     website.langlist=langlist   
     
+    
+    postlist_lan=dict()
     # create list of menus per lang  and per page      
     for lang in langlist:
+        postlist_lan[lang]=list()
         menulist=list()
         for i in range(len(website.pagelist)):
             page=website.pagelist[i]
