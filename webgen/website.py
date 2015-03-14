@@ -10,8 +10,8 @@ import configobj, jinja2, sys, argparse, glob
 import os, fnmatch, markdown, codecs, shutil
 import datetime, imp
 import validate
+import plugins
 
-c_file='config.cfg'
 
 # config file specifications
 c_file_spec="""
@@ -24,6 +24,7 @@ plugdir=string(default='plugins')
 default_template=string(default='')
 default_post_template=string(default='')
 default_markup=string(default='markdown')
+markdown_extensions=string_list(default=list())
 plugins=string_list(default=list())
 generate_posts=boolean(default=False)
 [Default]
@@ -131,7 +132,14 @@ def import_(filename):
     (name, ext) = os.path.splitext(name)
 
     (file, filename, data) = imp.find_module(name, [path])
-    return imp.load_module(name, file, filename, data)                 
+    return imp.load_module(name, file, filename, data)        
+
+def import2_(mod):
+    """
+    import modules as plugins
+    """
+    (file, filename, data) = imp.find_module(mod)
+    return imp.load_module(name, file, filename, data)  
                   
 def init_page_properties(page,plugs=[]):
     """
@@ -312,7 +320,11 @@ class website:
             try:
                 self.plugs.append(import_(self.config['General']['plugdir']+os.sep+pname))
             except ImportError:
-                print("Warning: non-existing plugin '{}'".format(pname))
+                #try:
+                if pname in plugins.plug_list:
+                    self.plugs.append(plugins.plug_list[pname])
+                else:
+                    print("Warning: non-existing plugin '{}'".format(pname))
             
     def apply_plugins(self):
         """
@@ -614,12 +626,6 @@ class website:
         self.sel_post_lan()
         
         
-
-def init(config):
-    sys.path.append('md_extensions')
-    
-
-
 def init_default_website():
     try:
         os.mkdir('src')
@@ -643,32 +649,7 @@ def init_default_website():
         print("Error: already existing files, use empty folder")
 
 
-def main(argv):  
 
-    parser = argparse.ArgumentParser(prog='webgen.py',
-                                     formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='''pywebgen is a python version of the webgen generator''',
-    epilog='''''')   
-    
-    parser.add_argument('-c','--configfile', type=str, nargs=1,
-                   help='set the configuration file',action="store",default=c_file) 
-    parser.add_argument('-v','--verbose',help='print information during website generation', action='store_true')
-    parser.add_argument('-i','--init',help='create simple stater website in the current folder', action='store_true')
-                   
-    args= parser.parse_args()   
-    
-    config=load_config(args.configfile)
-    if args.init:
-        init_default_website()
-    else:    
-        if config==None:
-            print 'bad config file format'
-        elif not config:
-            print 'no config file, using '       
-        else:
-            init(config)
-            site=website(args.configfile,verbose=args.verbose)
-            site.generate_website()
 
 def test():   
    import doctest
@@ -677,7 +658,3 @@ def test():
     
     
 
-if __name__ == "__main__":
-   #import doctest
-   #doctest.testmod(verbose=True)   
-   main(sys.argv[1:])
