@@ -433,7 +433,7 @@ class website:
         """
 
         # check existing directories in output
-        if not os.path.isdir(self.outdir):
+        if not os.path.isdir(self.outdir) and self.pagelist:
             os.mkdir(self.outdir)
         for path in self.listdir:
             path=path.replace(self.srcdir,self.outdir)
@@ -453,28 +453,31 @@ class website:
         
                 
         self.log("Write pages:")
-        for page in self.pagelist:
-            self.log("\t"+page['filename'])
-            #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
-            
-            template=self.templates[page['template']]
-            page['raw_page']=template.render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
-            #print page['raw_page']
-            f=codecs.open(self.outdir+os.sep+page['filename']+'.html',mode='w', encoding="utf8")
-            f.write(page['raw_page'])
-            f.close()
-
-        if self.config['General']['generate_posts']=='True':
-            self.log("Write posts:")
-            for page in self.postlist:
+        if self.pagelist:
+            for page in self.pagelist:
                 self.log("\t"+page['filename'])
-                #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
+                #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
+                
                 template=self.templates[page['template']]
-                page['raw_page']=template.render(pagelist=self.pagelist,ext=self.ext,postlist=self.postlist,postlist_lan=self.postlist_lan,**page)
+                page['raw_page']=template.render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
                 #print page['raw_page']
-                f=codecs.open(self.outdir+os.sep+page['filename']+'_post'+'.html',mode='w', encoding="utf8")
+                f=codecs.open(self.outdir+os.sep+page['filename']+'.html',mode='w', encoding="utf8")
                 f.write(page['raw_page'])
                 f.close()
+    
+            if self.config['General']['generate_posts']=='True':
+                self.log("Write posts:")
+                for page in self.postlist:
+                    self.log("\t"+page['filename'])
+                    #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
+                    template=self.templates[page['template']]
+                    page['raw_page']=template.render(pagelist=self.pagelist,ext=self.ext,postlist=self.postlist,postlist_lan=self.postlist_lan,**page)
+                    #print page['raw_page']
+                    f=codecs.open(self.outdir+os.sep+page['filename']+'_post'+'.html',mode='w', encoding="utf8")
+                    f.write(page['raw_page'])
+                    f.close()
+        else:
+            print('Warning : no pages generated')
         
                         
                 

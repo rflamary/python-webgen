@@ -1,7 +1,7 @@
 
 # import all plugins and set a dictionary for selection
 import bibtex
-import copy
+import copyfile
 import csvload
 import langbar
 import links
@@ -10,7 +10,7 @@ import sitemap
 import zorglangue
 
 plug_list={'bibtex':bibtex,
-           'copy':copy,
+           'copyfile':copyfile,
            'csvload':csvload,
            'langbar':langbar,
            'links':links,
