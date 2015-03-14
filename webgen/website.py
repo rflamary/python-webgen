@@ -33,6 +33,8 @@ base_name=string(default='')
 base_subname=string(default='')
 base_author=string(default='')
 [menu]
+class_ul=string(default='')
+li=string(default='li')
 class_li_current=string(default='')
 class_li_other=string(default='')
 [Links]

@@ -1,5 +1,5 @@
 ---
-title: Liste à partir d'un fichier cvs
+title: Liste CSV
 in_menu: true
 sort_info: 3
 ---
@@ -19,7 +19,7 @@ Liste de super méchants:
 
 Sous la forme d'un tableau:
 
-<table style="border:1px">
+<table class="table">
 	<tr>
 		<th>Nom</th>
 		<th>Alias</th>		
