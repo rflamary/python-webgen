@@ -1,10 +1,10 @@
 #!/usr/bin/python
 
-import sys,webgen,argparse
+import sys,webgen,argparse,os
 
 sys.path.append( ".." )
 
-c_file='config.cfg'
+c_file='website.cfg'
 
 def init(config):
     sys.path.append('md_extensions')
@@ -23,16 +23,17 @@ def main(argv):
                    
     args= parser.parse_args()   
     
-    config=webgen.load_config(args.configfile)
+    
     if args.init:
         webgen.init_default_website()
     else:    
+        config=webgen.load_config(args.configfile)
         if config==None:
-            print 'bad config file format'
-        elif not config:
-            print 'no config file, using '       
+            print 'bad config file format'   
         else:
             init(config)
+            if not os.path.isfile(args.configfile):
+                print('Warning : no configuration file "{}", using default values'.format(args.configfile))
             site=webgen.website(args.configfile,verbose=args.verbose)
             site.generate_website()
 

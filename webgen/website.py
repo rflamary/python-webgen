@@ -27,8 +27,8 @@ default_markup=string(default='markdown')
 markdown_extensions=string_list(default=list())
 plugins=string_list(default=list())
 generate_posts=boolean(default=False)
-[Default]
 base_url=string(default='')
+[Default]
 base_name=string(default='')
 base_subname=string(default='')
 base_author=string(default='')
@@ -39,7 +39,6 @@ class_li_other=string(default='')
 class_li_link=string(default='')
 [[lists]]
 [langbar]
-uselangbar=boolean(default=True)
 separator=string(default='')
 [[__many__]]
 text=string(default='')
@@ -48,19 +47,15 @@ list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
 
-default_template="""
-<!DOCTYPE html>
+default_template="""<!DOCTYPE html>
 <html>
 <head>
   <title>{{ title }}</title>
 </head>
-
 <body>
 {{ content }}
 </body>
-
-</html>
-"""
+</html>"""
 
 default_config="""
 [General]
@@ -71,22 +66,26 @@ lang=en
 srcdir='src'
 outdir='out'
 templdir='templates'
+plugdir='plugins'
 
 # default templates (when no template is given in the Salut)
 default_template='default'
 default_post_template='default'
 default_markup='markdown'
-markdown_extensions=,
 
+#plugins
+plugins=menu,copyfile
+
+# generates html for posts
 generate_posts=False
-[Page]
 
-[Plugins]
-list=,
+[Default]
 
-[Pattern]
-# patterns for files to copy as is
-[[Copy]]
+base_name='Website name'
+base_subname='Awesome website'
+base_author='me !'
+
+[copy]
 list='images/*','*.css','*.js'
 """
 
@@ -639,7 +638,7 @@ def init_default_website():
         f.write(default_page)
         f.close()
 
-        f=open('config.cfg','w')
+        f=open('website.cfg','w')
         f.write(default_config)
         f.close()     
         
