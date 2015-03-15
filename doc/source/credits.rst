@@ -2,8 +2,6 @@ Credits
 =======
 
 
-
-
 License
 -------
 
@@ -12,4 +10,3 @@ License
 
 References
 ----------
-

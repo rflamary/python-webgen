@@ -9,6 +9,8 @@ import webgen._version as version
 ROOT = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(ROOT, 'README.md')).read()
 
+pte='pywebgen-example'
+
 setup(name='python-webgen',
       version=version.__version__,
       description='static website generation',
@@ -20,15 +22,15 @@ setup(name='python-webgen',
       platforms=['linux'],
       license = 'GPL',
       scripts=['pywebgen'],
-      data_files=[('', ['example/website.cfg','example/Makefile','README.md']),
-                  ('',glob.glob('example/*/*.page')),
-                  ('',glob.glob('example/*/*.template')),
-                  ('',glob.glob('example/*/*.html')),
-                  ('',glob.glob('example/*/*/*.css')),
-                  ('',glob.glob('example/*/*/*.bib')),
-                  ('',glob.glob('example/*/*.csv')),
-                  ('',glob.glob('example/*/*/*.png')),
-                  ('',glob.glob('example/*/*/*.post'))],
+      data_files=[(pte, ['example/website.cfg','example/Makefile','README.md']),
+                  (pte+os.sep+'src',glob.glob('example/*/*.page')),
+                  (pte+os.sep+'templates',glob.glob('example/templates/*.template')),
+                  (pte+os.sep+'templates',glob.glob('example/templates/*.html')),
+                  (pte+os.sep+'src'+os.sep+'css',glob.glob('example/src/*/*.css')),
+                  (pte+os.sep+'src'+os.sep+'bib',glob.glob('example/src/*/*.bib')),
+                  (pte+os.sep+'src',glob.glob('example/src/*.csv')),
+                  (pte+os.sep+'src'+os.sep+'images',glob.glob('example/*/*.png')),
+                  (pte+os.sep+'src'+os.sep+'news',glob.glob('example/src/news/*.post'))],
       requires=["argparse (>=0.1)","configobj (>=4.7)","jinja2 (>= 2.6)","markdown (>= 2.1)"],
       classifiers=[
         'Development Status :: 4 - Beta',
@@ -39,6 +41,6 @@ setup(name='python-webgen',
         'Operating System :: MacOS',
         'Operating System :: POSIX',
         'Programming Language :: Python',
-        'Topic :: Utilities'        
+        'Topic :: Utilities'
     ]
      )
