@@ -274,12 +274,13 @@ class website:
         self.log("Initialization")
         self.config=load_config(c_file)
         
-        self.srcdir=os.path.join(os.getcwd(),self.config['General']['srcdir'])
-        self.outdir=os.path.join(os.getcwd(),self.config['General']['outdir'])
-        self.templdir=os.path.join(os.getcwd(),self.config['General']['templdir'])
+#        self.srcdir=os.path.join(os.getcwd(),self.config['General']['srcdir'])
+#        self.outdir=os.path.join(os.getcwd(),self.config['General']['outdir'])
+#        self.templdir=os.path.join(os.getcwd(),self.config['General']['templdir'])
         
-        #self.srcdir=self.config['General']['srcdir']
-        #self.outdir=self.config['General']['outdir']
+        self.srcdir=self.config['General']['srcdir']
+        self.outdir=self.config['General']['outdir']
+        self.templdir=self.config['General']['templdir']
         
         # lists of page ad posts both passed to jinja templates
         self.pagelist=list()
