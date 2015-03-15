@@ -54,17 +54,16 @@ Those can be easily installed on debian-based linux with:
 	
 ### Testing
 
-The github repository contains a demo website with:
+The github repository contains a example website with:
 
-* *config.cfg* a demo config file
+* *website.cfg* a demo config file
 * *templates* folder containing templates for the demo website
 * *src* source architecture and content for the website
 
-Execute webgen.py in the folder for generating the website in the *out* folder:
+Execute pywebgen in the folder for generating the website in the *out* folder:
 
-	$ ./webgen.py
+	$ .././pywebgen
 	
-The markdown 'latex' extension is not used by default, to activate it, add 'latex' to markdown extensions in the configuration file.	
 	
 ## Documentation
 
