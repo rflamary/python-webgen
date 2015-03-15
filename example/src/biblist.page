@@ -1,12 +1,10 @@
 ---
-title: Bib Liste
+title: Biblio
 in_menu: true
 sort_info: 2
 ---
 
-Liste de références:
-
-
+List of references:
 
 {% import 'ref.html' as pref %}
 
@@ -17,8 +15,4 @@ Liste de références:
 {% endfor %}
  </tbody> 
 </table> 
-
-
-
-
 

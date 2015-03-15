@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{{ base_name }} / {{ title }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ reloc }}css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{{ reloc }}css/starter-template.css" rel="stylesheet">
+
+
+    <link rel="stylesheet" type="text/css" href="{{ reloc }}css/biblio.css" />
+    <script type="text/javascript" src="{{ reloc }}bibsearch.js"></script>
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">Mon site web</a>
+        </div>
+        <div id="navbar" class="navbar-collapse">
+		{{ menu }}
+      <ul class="nav navbar-nav navbar-right">
+		{% for lang in langdic %}
+		  <li><a href="{{ langdic[lang]['url'] }}">
+			<img src="{{ reloc }}{{ langdic[lang]['img'] }}" alt="flag"/>
+		      </a>
+		  </li>
+		{% endfor %}
+          </ul>
+        </li>
+      </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+
+    </nav>
+
+    <div class="container">
+	<h1>{{ title }}</h1>
+
+      <div>
+        {{ content }}
+      </div>
+
+    </div><!-- /.container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="../../dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>
+

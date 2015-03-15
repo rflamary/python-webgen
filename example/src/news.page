@@ -6,12 +6,11 @@ sort_info: 1
 
 List of posts:
 
-
 {% for post in postlist %}
 {%- if post['lang']==lang -%}
 <h3>{{ post['title'] }}</h3>
-<pre><code>{{ post['date'] }}</code></pre>
-{{ post['content'] }}
+<div style="margin-left: 15px;"><p class="fmt-date">{{ post['date'] }}</p></div>
+<div style="margin-left: 10px;">{{ post['content'] }}</div>
 {% endif %}   
 {% endfor %}
 

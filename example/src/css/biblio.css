@@ -1,0 +1,38 @@
+/* publi page */
+
+
+#page qs { width: auto; border-style: solid; border-color: gray; border-width: 1px 1px 0px 1px; padding: 0.5em 0.5em; display:none; position:relative; }
+#page qs form { padding: 0px; margin: 0px; }
+#page qs form p { padding: 0px; margin: 0px; }
+ 
+.invalidsearch { background-color: red; }
+
+table { border: 1px gray none; width: 100%; empty-cells: show; border-spacing: 0em 0.3em; margin-top: 1em; }
+th, td { border-width: 0px 0px; border-color: gray; border-style: solid; padding: 0.5em; vertical-align: top;  }
+td { text-align: justify; vertical-align: top; }
+
+td a { color: navy; text-decoration: none; }
+td a:hover  { text-decoration: underline; }
+
+tr.noshow { display: none;}
+
+tr.highlight td { background-color: #F1F1F1 }
+tr.abstract td, tr.review td, tr.bibtex td { background-color: #F1F1F1; border-bottom: 1px black solid; text-align: justify; }
+tr.nextshow td { border-bottom: none; }
+
+tr.bibtex td pre {overflow: auto; }
+
+p.infolinks { margin: 0.5em 0em 0em 0em; padding: 0px; }
+
+#page qs form qssettings { padding: 0.5em; position: absolute; top: 0.2em; right: 0.2em; border: 0px gray solid; background-color: white; display: none;}
+#page qs form qssettings p { font-weight: bold; cursor: pointer; }
+#page qs form qssettings ul { display: none; list-style-type: none; padding-left: 0; margin: 0; }
+#page qs form qssettings.active ul { display: none; }
+
+@media print {
+	p.infolinks, #qssettings, #qs { display: none !important; }
+	tr { page-break-inside: avoid; }
+		tr > * + * + * + * + * {display: none; }
+	thead tr::before { content: "Reference"; border: 1px gray solid; padding: 0.5em; vertical-align: top; font-weight: bold; text-align: center; display: table-cell; background-color: #EFEFEF; }
+	tr[id]::before { content: attr(id); display: table-cell; border: 1px gray solid; padding: 0.5em; vertical-align: top; font-style: italic; }
+}

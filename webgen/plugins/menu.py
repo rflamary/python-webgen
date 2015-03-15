@@ -49,12 +49,12 @@ def get_menu(website,menulist,i):
     get html menu with pages selected in menulist for page i (index).
     the selected page is not a link and has a different il class
     """
-    res="<ul>\n"
+    res='<ul class="{classe}">\n'.format(classe=website.config[plug_name]['class_ul'])
     rel=website.pagelist[i]['reloc']
     for j in menulist:
         page=website.pagelist[j]
         if j==i:
-            res+=u'\t\t<{li} class="{classe}"><span>{title}</span></{li}>\n'.format(classe=website.config[plug_name]['class_li_current'],title=page['title'],li=website.config[plug_name]['li'])
+            res+=u'\t\t<{li} class="{classe}"><a href="{adress}.html">{title}</a></{li}>\n'.format(classe=website.config[plug_name]['class_li_current'],title=page['title'],adress=rel+page['filename'],li=website.config[plug_name]['li'])
         else:
             res+=u'\t\t<{li} class="{classe}"><a href="{adress}.html">{title}</a></{li}>'.format(classe=website.config[plug_name]['class_li_other'],title=page['title'],adress=rel+page['filename'],li=website.config[plug_name]['li'])
     res+="</ul>\n"
@@ -66,7 +66,7 @@ def get_menu_post(website,menulist,i):
     get html menu with pages selected in menulist for post i (index)
     no pages are select in this case
     """        
-    res="<ul>\n"
+    res='<ul class="{classe}">\n'.format(classe=website.config[plug_name]['class_ul'])
     rel=website.postlist[i]['reloc']
     for j in menulist:
         page=website.pagelist[j]

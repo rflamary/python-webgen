@@ -1,10 +1,10 @@
 ---
-title: Liste à partir d'un fichier cvs
+title: CSV List
 in_menu: true
 sort_info: 3
 ---
 
-Liste de super méchants:
+List of awesome vilains:
 
 
 
@@ -17,12 +17,13 @@ Liste de super méchants:
 
 </ul></div>
 
-Sous la forme d'un tableau:
 
-<table style="border:1px">
+In table form:
+
+<table class="table">
 	<tr>
-		<th>Nom</th>
-		<th>Alias</th>		
+		<th>Name</th>
+		<th>Also known as</th>		
 	</tr>
 		{% for ref in ext['csvload'][0] %}
  	<tr>
@@ -33,4 +34,8 @@ Sous la forme d'un tableau:
 
 	{% endfor %}
 
+
 </table>
+
+
+

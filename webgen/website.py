@@ -10,8 +10,8 @@ import configobj, jinja2, sys, argparse, glob
 import os, fnmatch, markdown, codecs, shutil
 import datetime, imp
 import validate
+import plugins
 
-c_file='config.cfg'
 
 # config file specifications
 c_file_spec="""
@@ -24,21 +24,23 @@ plugdir=string(default='plugins')
 default_template=string(default='')
 default_post_template=string(default='')
 default_markup=string(default='markdown')
+markdown_extensions=string_list(default=list())
 plugins=string_list(default=list())
 generate_posts=boolean(default=False)
-[Default]
 base_url=string(default='')
+[Default]
 base_name=string(default='')
 base_subname=string(default='')
 base_author=string(default='')
 [menu]
+class_ul=string(default='')
+li=string(default='li')
 class_li_current=string(default='')
 class_li_other=string(default='')
 [Links]
 class_li_link=string(default='')
 [[lists]]
 [langbar]
-uselangbar=boolean(default=True)
 separator=string(default='')
 [[__many__]]
 text=string(default='')
@@ -47,19 +49,15 @@ list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
 
-default_template="""
-<!DOCTYPE html>
+default_template="""<!DOCTYPE html>
 <html>
 <head>
   <title>{{ title }}</title>
 </head>
-
 <body>
 {{ content }}
 </body>
-
-</html>
-"""
+</html>"""
 
 default_config="""
 [General]
@@ -70,22 +68,26 @@ lang=en
 srcdir='src'
 outdir='out'
 templdir='templates'
+plugdir='plugins'
 
 # default templates (when no template is given in the Salut)
 default_template='default'
 default_post_template='default'
 default_markup='markdown'
-markdown_extensions=,
 
+#plugins
+plugins=menu,copyfile
+
+# generates html for posts
 generate_posts=False
-[Page]
 
-[Plugins]
-list=,
+[Default]
 
-[Pattern]
-# patterns for files to copy as is
-[[Copy]]
+base_name='Website name'
+base_subname='Awesome website'
+base_author='me !'
+
+[copy]
 list='images/*','*.css','*.js'
 """
 
@@ -131,7 +133,14 @@ def import_(filename):
     (name, ext) = os.path.splitext(name)
 
     (file, filename, data) = imp.find_module(name, [path])
-    return imp.load_module(name, file, filename, data)                 
+    return imp.load_module(name, file, filename, data)        
+
+def import2_(mod):
+    """
+    import modules as plugins
+    """
+    (file, filename, data) = imp.find_module(mod)
+    return imp.load_module(name, file, filename, data)  
                   
 def init_page_properties(page,plugs=[]):
     """
@@ -265,12 +274,13 @@ class website:
         self.log("Initialization")
         self.config=load_config(c_file)
         
-        self.srcdir=os.path.join(os.getcwd(),self.config['General']['srcdir'])
-        self.outdir=os.path.join(os.getcwd(),self.config['General']['outdir'])
-        self.templdir=os.path.join(os.getcwd(),self.config['General']['templdir'])
+#        self.srcdir=os.path.join(os.getcwd(),self.config['General']['srcdir'])
+#        self.outdir=os.path.join(os.getcwd(),self.config['General']['outdir'])
+#        self.templdir=os.path.join(os.getcwd(),self.config['General']['templdir'])
         
-        #self.srcdir=self.config['General']['srcdir']
-        #self.outdir=self.config['General']['outdir']
+        self.srcdir=self.config['General']['srcdir']
+        self.outdir=self.config['General']['outdir']
+        self.templdir=self.config['General']['templdir']
         
         # lists of page ad posts both passed to jinja templates
         self.pagelist=list()
@@ -312,7 +322,11 @@ class website:
             try:
                 self.plugs.append(import_(self.config['General']['plugdir']+os.sep+pname))
             except ImportError:
-                print("Warning: non-existing plugin '{}'".format(pname))
+                #try:
+                if pname in plugins.plug_list:
+                    self.plugs.append(plugins.plug_list[pname])
+                else:
+                    print("Warning: non-existing plugin '{}'".format(pname))
             
     def apply_plugins(self):
         """
@@ -421,7 +435,7 @@ class website:
         """
 
         # check existing directories in output
-        if not os.path.isdir(self.outdir):
+        if not os.path.isdir(self.outdir) and self.pagelist:
             os.mkdir(self.outdir)
         for path in self.listdir:
             path=path.replace(self.srcdir,self.outdir)
@@ -441,28 +455,31 @@ class website:
         
                 
         self.log("Write pages:")
-        for page in self.pagelist:
-            self.log("\t"+page['filename'])
-            #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
-            
-            template=self.templates[page['template']]
-            page['raw_page']=template.render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
-            #print page['raw_page']
-            f=codecs.open(self.outdir+os.sep+page['filename']+'.html',mode='w', encoding="utf8")
-            f.write(page['raw_page'])
-            f.close()
-
-        if self.config['General']['generate_posts']=='True':
-            self.log("Write posts:")
-            for page in self.postlist:
+        if self.pagelist:
+            for page in self.pagelist:
                 self.log("\t"+page['filename'])
-                #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
+                #print "Generating page: {page}".format(page=self.outdir+os.sep+page['filename']+'.html')
+                
                 template=self.templates[page['template']]
-                page['raw_page']=template.render(pagelist=self.pagelist,ext=self.ext,postlist=self.postlist,postlist_lan=self.postlist_lan,**page)
+                page['raw_page']=template.render(pagelist=self.pagelist,postlist=self.postlist,postlist_lan=self.postlist_lan,ext=self.ext,**page)
                 #print page['raw_page']
-                f=codecs.open(self.outdir+os.sep+page['filename']+'_post'+'.html',mode='w', encoding="utf8")
+                f=codecs.open(self.outdir+os.sep+page['filename']+'.html',mode='w', encoding="utf8")
                 f.write(page['raw_page'])
                 f.close()
+    
+            if self.config['General']['generate_posts']=='True':
+                self.log("Write posts:")
+                for page in self.postlist:
+                    self.log("\t"+page['filename'])
+                    #print "Generating post: {page}".format(page=self.outdir+os.sep+page['filename']+'_post'+'.html')
+                    template=self.templates[page['template']]
+                    page['raw_page']=template.render(pagelist=self.pagelist,ext=self.ext,postlist=self.postlist,postlist_lan=self.postlist_lan,**page)
+                    #print page['raw_page']
+                    f=codecs.open(self.outdir+os.sep+page['filename']+'_post'+'.html',mode='w', encoding="utf8")
+                    f.write(page['raw_page'])
+                    f.close()
+        else:
+            print('Warning : no pages generated')
         
                         
                 
@@ -614,12 +631,6 @@ class website:
         self.sel_post_lan()
         
         
-
-def init(config):
-    sys.path.append('md_extensions')
-    
-
-
 def init_default_website():
     try:
         os.mkdir('src')
@@ -630,7 +641,7 @@ def init_default_website():
         f.write(default_page)
         f.close()
 
-        f=open('config.cfg','w')
+        f=open('website.cfg','w')
         f.write(default_config)
         f.close()     
         
@@ -643,32 +654,7 @@ def init_default_website():
         print("Error: already existing files, use empty folder")
 
 
-def main(argv):  
 
-    parser = argparse.ArgumentParser(prog='webgen.py',
-                                     formatter_class=argparse.RawDescriptionHelpFormatter,
-        description='''pywebgen is a python version of the webgen generator''',
-    epilog='''''')   
-    
-    parser.add_argument('-c','--configfile', type=str, nargs=1,
-                   help='set the configuration file',action="store",default=c_file) 
-    parser.add_argument('-v','--verbose',help='print information during website generation', action='store_true')
-    parser.add_argument('-i','--init',help='create simple stater website in the current folder', action='store_true')
-                   
-    args= parser.parse_args()   
-    
-    config=load_config(args.configfile)
-    if args.init:
-        init_default_website()
-    else:    
-        if config==None:
-            print 'bad config file format'
-        elif not config:
-            print 'no config file, using '       
-        else:
-            init(config)
-            site=website(args.configfile,verbose=args.verbose)
-            site.generate_website()
 
 def test():   
    import doctest
@@ -677,7 +663,3 @@ def test():
     
     
 
-if __name__ == "__main__":
-   #import doctest
-   #doctest.testmod(verbose=True)   
-   main(sys.argv[1:])

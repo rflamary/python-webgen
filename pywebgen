@@ -1,0 +1,44 @@
+#!/usr/bin/python
+
+import sys,webgen,argparse,os
+
+sys.path.append( ".." )
+
+c_file='website.cfg'
+
+def init(config):
+    sys.path.append('md_extensions')
+    
+def main(argv):  
+
+    parser = argparse.ArgumentParser(prog='pywebgen',
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+        description='''pywebgen is a python version of the webgen generator''',
+    epilog='''''')   
+    
+    parser.add_argument('-c','--configfile', type=str, nargs=1,
+                   help='set the configuration file',action="store",default=c_file) 
+    parser.add_argument('-v','--verbose',help='print information during website generation', action='store_true')
+    parser.add_argument('-i','--init',help='create simple stater website in the current folder', action='store_true')
+                   
+    args= parser.parse_args()   
+    
+    
+    if args.init:
+        webgen.init_default_website()
+    else:    
+        config=webgen.load_config(args.configfile)
+        if config==None:
+            print 'bad config file format'   
+        else:
+            init(config)
+            if not os.path.isfile(args.configfile):
+                print('Warning : no configuration file "{}", using default values'.format(args.configfile))
+            site=webgen.website(args.configfile,verbose=args.verbose)
+            site.generate_website()
+
+
+if __name__ == "__main__":
+   #import doctest
+   #doctest.testmod(verbose=True)   
+   main(sys.argv[1:])

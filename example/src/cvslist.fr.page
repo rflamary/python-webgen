@@ -1,10 +1,10 @@
 ---
-title: List from csv file
+title: Liste CSV
 in_menu: true
 sort_info: 3
 ---
 
-List of awesome vilains:
+Liste de super méchants:
 
 
 
@@ -17,13 +17,12 @@ List of awesome vilains:
 
 </ul></div>
 
+Sous la forme d'un tableau:
 
-In table form:
-
-<table style="border:1px">
+<table class="table">
 	<tr>
-		<th>Name</th>
-		<th>Also known as</th>		
+		<th>Nom</th>
+		<th>Alias</th>		
 	</tr>
 		{% for ref in ext['csvload'][0] %}
  	<tr>
@@ -34,8 +33,4 @@ In table form:
 
 	{% endfor %}
 
-
 </table>
-
-
-
