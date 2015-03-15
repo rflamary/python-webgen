@@ -1,4 +1,4 @@
-Webgen.py
+python-webgen
 =========
 
 Webgen.py is a Python version of the well known [webgen](http://webgen.rubyforge.org/) static website generator. It is not a complete rewrite of webgen and some features are missing but there are also a few new nice things. The main reason webgen.py exists is because i did not know ruby and changing things with webgen is a pain so i decided to use my own python generator.
