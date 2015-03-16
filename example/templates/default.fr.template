@@ -31,9 +31,9 @@
         <div id="navbar" class="navbar-collapse">
 		{{ menu }}
       <ul class="nav navbar-nav navbar-right">
-		{% for lang in langdic %}
-		  <li><a href="{{ langdic[lang]['url'] }}">
-			<img src="{{ reloc }}{{ langdic[lang]['img'] }}" alt="flag"/>
+		{% for lang in langlist %}
+		  <li><a href="{{ lang['url'] }}">
+			<img src="{{ reloc }}{{ lang['img'] }}" alt="{{ lang['lang'] }}"/>
 		      </a>
 		  </li>
 		{% endfor %}

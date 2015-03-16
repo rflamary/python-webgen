@@ -6,12 +6,6 @@ Created on Thu Jul 26 13:41:48 2012
 """
 
 
-import string
-import copy,codecs,os
-import re,datetime
-
-         
-
 lst_prop_init=[['langbar',''],]
 
 plug_name='langbar'
@@ -50,11 +44,13 @@ def get_langbar(website,i):
             res+=u'<a href="{adress}.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config[plug_name]['separator']))
     return res
 
-def get_langdic(website,i):
+
+
+def get_langlist(website,i):
     """
     get the html for the langbar of page i (using reloc to always point well)
     """
-    res=dict()
+    res=list()
     page=website.pagelist[i]
     for lang in website.langlist:
         if len(website.get_langage_str(lang)):
@@ -62,15 +58,14 @@ def get_langdic(website,i):
         else:
             adress=page['filename_nolang']
         if find_page(adress,website.pagelist):
-            text=website.config[plug_name][lang]['text'].format(reloc=page['reloc'])
             temp=dict()
+            temp['lang']=lang
             temp['url']=page['reloc']+unicode(adress)+'.html'
             for key in website.config[plug_name][lang]:
                 temp[key]=website.config[plug_name][lang][key]
             #print '{0}'.format(self.config['LangBar'][lang]['text'])
-            res[lang]=temp
+            res.append(temp)
     return res
-
         
 def get_langbar_post(website,i):
     """
@@ -89,11 +84,11 @@ def get_langbar_post(website,i):
             res+=u'<a href="{adress}_post.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config[plug_name]['separator']))
     return res
      
-def get_langdic_post(website,i):
+def get_langlist_post(website,i):
     """
-    get the html for the langbar of post i (using reloc to always point well)
-    """        
-    res=dict()
+    get the html for the langbar of page i (using reloc to always point well)
+    """
+    res=list()
     page=website.postlist[i]
     for lang in website.langlist:
         if len(website.get_langage_str(lang)):
@@ -101,15 +96,14 @@ def get_langdic_post(website,i):
         else:
             adress=page['filename_nolang']
         if find_page(adress,website.pagelist):
-            text=website.config[plug_name][lang]['text'].format(reloc=page['reloc'])
             temp=dict()
+            temp['lang']=lang
             temp['url']=page['reloc']+unicode(adress)+'.html'
             for key in website.config[plug_name][lang]:
                 temp[key]=website.config[plug_name][lang][key]
             #print '{0}'.format(self.config['LangBar'][lang]['text'])
-            res[lang]=temp
-    return res
-     
+            res.append(temp)
+    return res     
    
 def plugin_change_lists(website):
     """
@@ -126,7 +120,6 @@ def plugin_change_lists(website):
     # create list of menus per lang  and per page      
     for lang in langlist:
         postlist_lan[lang]=list()
-        menulist=list()
         for i in range(len(website.pagelist)):
             page=website.pagelist[i]
         # for all pages
@@ -134,13 +127,13 @@ def plugin_change_lists(website):
             page=website.pagelist[i]
             if page['lang'] == lang:
                 page['langbar']=get_langbar(website,i)
-                page['langdic']=get_langdic(website,i)
+                page['langlist']=get_langlist(website,i)
         # for all posts
         for i in range(len(website.postlist)):
             page=website.postlist[i]
             if page['lang'] == lang:                  
                 page['langbar']=get_langbar_post(website,i)
-                page['langdic']=get_langdic_post(website,i)
+                page['langlist']=get_langlist_post(website,i)
 
 
 def plugin_change_lists_post(website):
