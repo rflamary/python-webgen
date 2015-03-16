@@ -86,7 +86,7 @@ def plugin_change_lists_post(website):
             temp['content']= temp['content'].replace('<',' <')
             temp['content']= temp['content'].replace('>','> ')
 
-            temp['content']= otag = re.sub("<a.*?>", " ", temp['content'])
+            temp['content']= re.sub("<a.*?>", " ", temp['content'])
             #temp['raw_text']=zorglangue(temp['raw_text'])
             temp['content']=zorglangue(unicode(temp['content']))
             temp['lang']='zl'
@@ -96,6 +96,10 @@ def plugin_change_lists_post(website):
             temp['website_name']=zorglangue(temp['website_name'])
             temp['website_subname']=zorglangue(temp['website_subname'])
             temp['template']='default.zl'
+            temp2={'url':page['reloc']+unicode(adress),'lang':'zl'}
+            for key in website.config['langbar']['zl']:
+                temp2[key]=website.config['langbar']['zl'][key]
+            page['langlist'].append(temp2)
             ptemp.append(temp)
             
             pass
@@ -103,6 +107,11 @@ def plugin_change_lists_post(website):
             adress=page['filename_nolang']
             text=website.config['langbar'][lang]['text'].format(reloc=page['reloc'])
             page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['langbar']['separator']))
+            
+            temp={'url':page['reloc']+unicode(adress),'lang':'zl'}
+            for key in website.config['langbar']['zl']:
+                temp[key]=website.config['langbar']['zl'][key]
+            page['langlist'].append(temp)
     
     for temp in ptemp:
         website.pagelist.append(temp)
