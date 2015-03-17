@@ -71,7 +71,7 @@ def get_menulist(website,menulist,i):
     for j in menulist:
         page=website.pagelist[j]
         temp=dict()
-        temp['url']=rel+page['filename']
+        temp['url']=rel+page['filename']+'.html'
         temp['title']=page['title']
         temp['current']=j==i
         res.append(temp)
@@ -101,7 +101,7 @@ def get_menu_postlist(website,menulist,i):
     for j in menulist:
         page=website.pagelist[j]
         temp=dict()
-        temp['url']=rel+page['filename']
+        temp['url']=rel+page['filename']+'.html'
         temp['title']=page['title']
         temp['current']=j==i
         res.append(temp)
