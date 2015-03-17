@@ -59,7 +59,23 @@ def get_menu(website,menulist,i):
             res+=u'\t\t<{li} class="{classe}"><a href="{adress}.html">{title}</a></{li}>'.format(classe=website.config[plug_name]['class_li_other'],title=page['title'],adress=rel+page['filename'],li=website.config[plug_name]['li'])
     res+="</ul>\n"
     return res
-    
+
+
+def get_menulist(website,menulist,i):
+    """
+    get html menu with pages selected in menulist for page i (index).
+    the selected page is not a link and has a different il class
+    """
+    rel=website.pagelist[i]['reloc']
+    res=list()
+    for j in menulist:
+        page=website.pagelist[j]
+        temp=dict()
+        temp['url']=rel+page['filename']
+        temp['title']=page['title']
+        temp['current']=j==i
+        res.append(temp)
+    return res
     
 def get_menu_post(website,menulist,i):
     """
@@ -74,6 +90,22 @@ def get_menu_post(website,menulist,i):
     res+="</ul>\n"
     return res
 
+
+def get_menu_postlist(website,menulist,i):
+    """
+    get html menu with pages selected in menulist for page i (index).
+    the selected page is not a link and has a different il class
+    """
+    rel=website.postlist[i]['reloc']
+    res=list()
+    for j in menulist:
+        page=website.pagelist[j]
+        temp=dict()
+        temp['url']=rel+page['filename']
+        temp['title']=page['title']
+        temp['current']=j==i
+        res.append(temp)
+    return res
 
 def set_menus_langbar(website):
     """
@@ -100,12 +132,14 @@ def set_menus_langbar(website):
             page=website.pagelist[i]
             if page['lang'] == lang:
                 page['menu']=get_menu(website,menulist,i) 
+                page['menulist']=get_menulist(website,menulist,i)
                 
         # for all posts
         for i in range(len(website.postlist)):
             page=website.postlist[i]
             if page['lang'] == lang:
-                page['menu']=get_menu_post(website,menulist,i)         
+                page['menu']=get_menu_post(website,menulist,i)   
+                page['menulist']=get_menu_postlist(website,menulist,i)
 
                 
 
