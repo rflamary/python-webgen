@@ -14,7 +14,7 @@ lst_prop_init=[]
 lst_prop_convert=[]             
 
 
-plug_name='copy'
+plug_name='copyfile'
 
 
 def plugin_change_lists(website):
