@@ -35,9 +35,9 @@ def plugin_change_lists_post(website):
             file2=files.replace(website.srcdir,website.outdir)
             # copy only if modified or not exists
             if not os.path.isfile(file2):
-                shutil.copy(files,file2)
+                shutil.copy2(files,file2)
             elif os.path.getmtime(file2)<os.path.getmtime(files):
-                shutil.copy(files,file2)
+                shutil.copy2(files,file2)
 
 def plugin_return(config):
     """
