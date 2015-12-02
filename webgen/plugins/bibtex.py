@@ -4,6 +4,9 @@ Created on Thu Jul 26 13:41:48 2012
 import datetime
 @author: flam
 """
+from __future__ import print_function
+from builtins import str
+from builtins import range
 import datetime
 import codecs
 
@@ -75,10 +78,10 @@ field_list=['author',
 
 def unlatexit(chaine):
     # remove the most obvious latex commands..
-    chaine=unicode(chaine)
+    chaine=str(chaine)
     if not chaine =='':
         for key in latex_fr:
-            chaine=unicode(chaine.replace(key[0],key[1])) 
+            chaine=str(chaine.replace(key[0],key[1])) 
     return (chaine)
     
 def tryget(item,field):
@@ -131,7 +134,7 @@ def get_author(txt):
         else:
             lst=clean_spaces(aut).split(' ')
             ls2.append(lst[-1]+', '+short_name(clean_spaces(u' '.join(lst[:-1]))))
-    print ls2
+    print(ls2)
     return u', '.join(ls2),[aut.split(', ')[1]+' '+aut.split(', ')[0] for aut in ls2]
     
 def get_author2(txt):

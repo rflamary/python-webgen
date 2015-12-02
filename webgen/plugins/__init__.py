@@ -1,13 +1,14 @@
+from __future__ import absolute_import
 
 # import all plugins and set a dictionary for selection
-import bibtex
-import copyfile
-import csvload
-import langbar
-import links
-import menu
-import sitemap
-import zorglangue
+from . import bibtex
+from . import copyfile
+from . import csvload
+from . import langbar
+from . import links
+from . import menu
+from . import sitemap
+from . import zorglangue
 
 plug_list={'bibtex':bibtex,
            'copyfile':copyfile,

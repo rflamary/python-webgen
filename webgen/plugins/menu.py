@@ -4,6 +4,7 @@ Created on Thu Jul 26 13:41:48 2012
 
 @author: flam
 """
+from builtins import range
 
 
 import string

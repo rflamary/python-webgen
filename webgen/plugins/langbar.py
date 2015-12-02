@@ -4,6 +4,8 @@ Created on Thu Jul 26 13:41:48 2012
 
 @author: flam
 """
+from builtins import str
+from builtins import range
 
 
 lst_prop_init=[['langbar',''],]
@@ -41,7 +43,7 @@ def get_langbar(website,i):
         if find_page(adress,website.pagelist):
             text=website.config[plug_name][lang]['text'].format(reloc=page['reloc'])
             #print '{0}'.format(self.config['LangBar'][lang]['text'])
-            res+=u'<a href="{adress}.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config[plug_name]['separator']))
+            res+=u'<a href="{adress}.html">{text}</a>{sep}'.format(adress=page['reloc']+str(adress),text=str(text),sep=str(website.config[plug_name]['separator']))
     return res
 
 
@@ -60,7 +62,7 @@ def get_langlist(website,i):
         if find_page(adress,website.pagelist):
             temp=dict()
             temp['lang']=lang
-            temp['url']=page['reloc']+unicode(adress)+'.html'
+            temp['url']=page['reloc']+str(adress)+'.html'
             for key in website.config[plug_name][lang]:
                 temp[key]=website.config[plug_name][lang][key]
             #print '{0}'.format(self.config['LangBar'][lang]['text'])
@@ -81,7 +83,7 @@ def get_langbar_post(website,i):
         if find_page(adress,website.postlist):
             text=website.config[plug_name][lang]['text'].format(reloc=page['reloc'])
             #print '{0}'.format(self.config['LangBar'][lang]['text'])
-            res+=u'<a href="{adress}_post.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config[plug_name]['separator']))
+            res+=u'<a href="{adress}_post.html">{text}</a>{sep}'.format(adress=page['reloc']+str(adress),text=str(text),sep=str(website.config[plug_name]['separator']))
     return res
      
 def get_langlist_post(website,i):
@@ -98,7 +100,7 @@ def get_langlist_post(website,i):
         if find_page(adress,website.pagelist):
             temp=dict()
             temp['lang']=lang
-            temp['url']=page['reloc']+unicode(adress)+'.html'
+            temp['url']=page['reloc']+str(adress)+'.html'
             for key in website.config[plug_name][lang]:
                 temp[key]=website.config[plug_name][lang][key]
             #print '{0}'.format(self.config['LangBar'][lang]['text'])

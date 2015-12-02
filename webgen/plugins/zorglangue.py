@@ -4,6 +4,7 @@ Created on Thu Jul 26 13:41:48 2012
 
 @author: flam
 """
+from builtins import str
 
 
 import string
@@ -80,7 +81,7 @@ def plugin_change_lists_post(website):
             
             adress=page['filename_nolang']
             text=website.config['langbar'][lang]['text'].format(reloc=page['reloc'])
-            page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['langbar']['separator']))
+            page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+str(adress),text=str(text),sep=str(website.config['langbar']['separator']))
             
             temp=copy.deepcopy(page)            
             temp['content']= temp['content'].replace('<',' <')
@@ -88,7 +89,7 @@ def plugin_change_lists_post(website):
 
             temp['content']= re.sub("<a.*?>", " ", temp['content'])
             #temp['raw_text']=zorglangue(temp['raw_text'])
-            temp['content']=zorglangue(unicode(temp['content']))
+            temp['content']=zorglangue(str(temp['content']))
             temp['lang']='zl'
             temp['filename']=temp['filename'].replace('.fr','.zl')
             temp['menu']=temp['menu'].replace('.fr','.zl')
@@ -96,7 +97,7 @@ def plugin_change_lists_post(website):
             temp['website_name']=zorglangue(temp['website_name'])
             temp['website_subname']=zorglangue(temp['website_subname'])
             temp['template']='default.zl'
-            temp2={'url':page['reloc']+unicode(adress),'lang':'zl'}
+            temp2={'url':page['reloc']+str(adress),'lang':'zl'}
             for key in website.config['langbar']['zl']:
                 temp2[key]=website.config['langbar']['zl'][key]
             page['langlist'].append(temp2)
@@ -106,9 +107,9 @@ def plugin_change_lists_post(website):
         else:
             adress=page['filename_nolang']
             text=website.config['langbar'][lang]['text'].format(reloc=page['reloc'])
-            page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+unicode(adress),text=unicode(text),sep=unicode(website.config['langbar']['separator']))
+            page['langbar']=page['langbar']+u'<a href="{adress}.zl.html">{text}</a>{sep}'.format(adress=page['reloc']+str(adress),text=str(text),sep=str(website.config['langbar']['separator']))
             
-            temp={'url':page['reloc']+unicode(adress),'lang':'zl'}
+            temp={'url':page['reloc']+str(adress),'lang':'zl'}
             for key in website.config['langbar']['zl']:
                 temp[key]=website.config['langbar']['zl'][key]
             page['langlist'].append(temp)

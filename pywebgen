@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from __future__ import print_function
 import sys,webgen,argparse,os
 
 sys.path.append( ".." )
@@ -29,7 +30,7 @@ def main(argv):
     else:    
         config=webgen.load_config(args.configfile)
         if config==None:
-            print 'bad config file format'   
+            print('bad config file format')   
         else:
             init(config)
             if not os.path.isfile(args.configfile):

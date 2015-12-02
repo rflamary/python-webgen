@@ -4,6 +4,9 @@ Created on Thu Jul 26 13:41:48 2012
 import datetime
 @author: flam
 """
+from __future__ import print_function
+from builtins import str
+from builtins import range
 import datetime
 import codecs
 
@@ -62,10 +65,10 @@ field_list=['author',
 
 def unlatexit(chaine):
     # remove the most obvious latex commands..
-    chaine=unicode(chaine)
+    chaine=str(chaine)
     if not chaine =='':
         for key in latex_fr:
-            chaine=unicode(chaine.replace(key[0],key[1])) 
+            chaine=str(chaine.replace(key[0],key[1])) 
     return (chaine)
     
 def tryget(item,field):
@@ -180,7 +183,7 @@ def load_bibfile(fname,recentyears=4):
 
     for temp in bib:
         temp['recentyears']=reentyears
-        print temp['key'],temp['type'],temp['year']
+        print(temp['key'],temp['type'],temp['year'])
         
     bib.sort(key=lambda k: k['year'],reverse=True)
     
