@@ -5,12 +5,15 @@ Created on Sun Jul 22 11:06:43 2012
 
 @author: flam
 """
+from __future__ import print_function
+from builtins import range
+from builtins import object
 
-import configobj, jinja2, sys, argparse, glob
-import os, fnmatch, markdown, codecs, shutil
+import configobj, jinja2
+import os, fnmatch, markdown, codecs
 import datetime, imp
 import validate
-import plugins
+from . import plugins
 
 
 # config file specifications
@@ -181,9 +184,9 @@ def load_config(c_file):
         if results != True:
             for (section_list, key, _) in configobj.flatten_errors(config, results):
                 if key is not None:
-                    print 'The "%s" key in the section "%s" failed validation' % (key, ', '.join(section_list))
+                    print('The "%s" key in the section "%s" failed validation'.format(key, ', '.join(section_list)))
                 else:
-                    print 'The following section was missing:%s ' % ', '.join(section_list)
+                    print('The following section was missing:%s '.format(', '.join(section_list)))
     except configobj.ParseError:
         config=None
     return config
@@ -235,7 +238,7 @@ def get_page_properties(page,raw_file,plugs):
             page[lst[0]]=lst[1][:-1]
         else:
             lst=raw_file[i+1].split(':')
-            print('Warning in page {page}:\n\t Property {prop} is not defined properly "name: value" \n\t For empty property use "name: "'.format(prop=lst[0],page=page['srcname']))
+            print(('Warning in page {page}:\n\t Property {prop} is not defined properly "name: value" \n\t For empty property use "name: "'.format(prop=lst[0],page=page['srcname'])))
     page['raw_text']=''.join(raw_file[imax+1:])
     for prop in lst_prop_convert:
         page[prop[0]]=prop[1](page[prop[0]])
@@ -259,7 +262,7 @@ def get_listdir(path):
     return lst
 
 
-class website:
+class website(object):
 
     def __init__(self,c_file,verbose=False):
 
@@ -320,7 +323,7 @@ class website:
                 if pname in plugins.plug_list:
                     self.plugs.append(plugins.plug_list[pname])
                 else:
-                    print("Warning: non-existing plugin '{}'".format(pname))
+                    print(("Warning: non-existing plugin '{}'".format(pname)))
 
     def apply_plugins(self):
         """
@@ -559,7 +562,7 @@ class website:
 
             # test if template exists, if naot, revert
             if not temp['template'] in self.templates:
-                print("Warning: template {} not found for page {}, reverting to default".format(temp['template'],page))
+                print(("Warning: template {} not found for page {}, reverting to default".format(temp['template'],page)))
                 temp['template']=self.config['General']['default_template']
 
             if len(self.get_langage_str(temp['lang'])) and temp['template']+'.'+self.get_langage_str(temp['lang']) in self.templates:
