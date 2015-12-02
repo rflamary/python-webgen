@@ -7,8 +7,78 @@ sys.path.append( ".." )
 
 c_file='website.cfg'
 
+
+default_config="""
+[General]
+# langage of pages and posts with no lang info
+lang=en
+
+# directories for website source, website output and templates
+srcdir='src'
+outdir='out'
+templdir='templates'
+plugdir='plugins'
+
+# default templates (when no template is given in the Salut)
+default_template='default'
+default_post_template='default'
+default_markup='markdown'
+
+#plugins
+plugins=menu,copyfile
+
+# generates html for posts
+generate_posts=False
+
+[Default]
+
+base_name='Website name'
+base_subname='Awesome website'
+base_author='me !'
+
+[copy]
+list='images/*','*.css','*.js'
+"""
+
+default_page="""---
+title: empty page
+---
+
+# {{ title }}
+
+## Subtitle
+
+empty text
+"""
+
 def init(config):
     sys.path.append('md_extensions')
+
+
+
+
+def init_default_website():
+    try:
+        os.mkdir('src')
+        os.mkdir('templates')
+
+        # default page
+        f=open('src/index.page','w')
+        f.write(default_page)
+        f.close()
+
+        f=open('website.cfg','w')
+        f.write(default_config)
+        f.close()
+
+        f=open('templates/default.template','w')
+        f.write(default_template)
+        f.close()
+
+
+    except :
+        print("Error: already existing files, use empty folder")
+
     
 def main(argv):  
 
@@ -26,7 +96,7 @@ def main(argv):
     
     
     if args.init:
-        webgen.init_default_website()
+        init_default_website()
     else:    
         config=webgen.load_config(args.configfile)
         if config==None:

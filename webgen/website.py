@@ -51,7 +51,6 @@ text=string(default='')
 list=list(default=list('robots.txt', '*.css','*.js','images/*'))
 """
 
-
 default_template="""<!DOCTYPE html>
 <html>
 <head>
@@ -61,49 +60,6 @@ default_template="""<!DOCTYPE html>
 {{ content }}
 </body>
 </html>"""
-
-default_config="""
-[General]
-# langage of pages and posts with no lang info
-lang=en
-
-# directories for website source, website output and templates
-srcdir='src'
-outdir='out'
-templdir='templates'
-plugdir='plugins'
-
-# default templates (when no template is given in the Salut)
-default_template='default'
-default_post_template='default'
-default_markup='markdown'
-
-#plugins
-plugins=menu,copyfile
-
-# generates html for posts
-generate_posts=False
-
-[Default]
-
-base_name='Website name'
-base_subname='Awesome website'
-base_author='me !'
-
-[copy]
-list='images/*','*.css','*.js'
-"""
-
-default_page="""---
-title: empty page
----
-
-# {{ title }}
-
-## Subtitle
-
-empty text
-"""
 
 # properties for pages if not set
 lst_prop_init=[['reloc',''],
@@ -627,28 +583,6 @@ class website(object):
 
         self.sel_post_lan()
 
-
-def init_default_website():
-    try:
-        os.mkdir('src')
-        os.mkdir('templates')
-
-        # default page
-        f=open('src/index.page','w')
-        f.write(default_page)
-        f.close()
-
-        f=open('website.cfg','w')
-        f.write(default_config)
-        f.close()
-
-        f=open('templates/default.template','w')
-        f.write(default_template)
-        f.close()
-
-
-    except :
-        print("Error: already existing files, use empty folder")
 
 
 
