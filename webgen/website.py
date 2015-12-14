@@ -453,7 +453,7 @@ class website(object):
 
         several tasks are performed:
             - loading all pages (props in header and raw_text)
-            - loading all posst( same)
+            - loading all posts ( same)
             - loading all templates in the template folder
 
         """
