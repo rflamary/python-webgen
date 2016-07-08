@@ -30,15 +30,15 @@ latex_fr=[[u'\\v{',u''],
           [u'\\_',u'_'],
           [u'\\c{c}',u'ç'],
           [u'\\{',u'\\ocb'],# tweak pour pouvoir toujour avoir des curls
-          [u'\\}',u'\\ccb'],          
+          [u'\\}',u'\\ccb'],
           [u'{',u''],
           [u'}',u''],
           [u'\\ocb',u'{'],
-          [u'\\ccb',u'}'], 
+          [u'\\ccb',u'}'],
           [u'\\\'e',u'é'],
           [u'\\`e',u'è'],
           [u'\\\'o','o'],
-          [u'\\"u',u'ü'], 
+          [u'\\"u',u'ü'],
           [u'\\"o',u'ö'],
           [u'\\"a',u'ä'],
           [u'\\`a',u'à'],
@@ -67,43 +67,43 @@ field_list=['author',
             'abstract',
             'key',
             'file',
-            'pdf',            
+            'pdf',
             'code',
             'demo',
             'doi',
             'pres',
             'pubtype',
-	    'submited']   
-            
+	    'submited']
+
 
 def unlatexit(chaine):
     # remove the most obvious latex commands..
     chaine=str(chaine)
     if not chaine =='':
         for key in latex_fr:
-            chaine=str(chaine.replace(key[0],key[1])) 
+            chaine=str(chaine.replace(key[0],key[1]))
     return (chaine)
-    
+
 def tryget(item,field):
-    try:         
+    try:
         res=item[field]
     except (KeyError):
         res=""
     return res
-        
+
 def prep_ref(ref):
     for field in field_list:
         ref[field]=unlatexit(tryget(ref,field))
 
 def load_bibfile2(fname):
-    
+
     #f = open(fname, "r")
     f = codecs.open(fname, "r", "utf-8")
-    
+
     lines=f.readlines()
-    
+
     lines=[l.replace('\t',' ') for l in lines]
-    
+
     return get_biblist(lines)
 
 
@@ -112,7 +112,7 @@ def clean_spaces(txt):
         while len(txt) and txt[0]==' ':
             txt=txt[1:]
         while len(txt) and txt[-1]==' ':
-            txt=txt[:-1]            
+            txt=txt[:-1]
     return txt
 
 def short_name(txt):
@@ -136,7 +136,7 @@ def get_author(txt):
             ls2.append(lst[-1]+', '+short_name(clean_spaces(u' '.join(lst[:-1]))))
     print(ls2)
     return u', '.join(ls2),[aut.split(', ')[1]+' '+aut.split(', ')[0] for aut in ls2]
-    
+
 def get_author2(txt):
 
     ls2=list()
@@ -147,23 +147,23 @@ def get_author2(txt):
         else:
             lst=clean_spaces(aut).split(' ')
             ls2.append(lst[-1]+', '+short_name(clean_spaces(u' '.join(lst[:-1]))))
-    #print u', '.join(ls2),[aut.split(', ')[0]+' '+aut.split(', ')[1] for aut in ls2] 
+    #print u', '.join(ls2),[aut.split(', ')[0]+' '+aut.split(', ')[1] for aut in ls2]
     ls3=[aut.split(', ')[1]+' '+aut.split(', ')[0] for aut in ls2]
-    return u', '.join(ls3),ls3   
+    return u', '.join(ls3),ls3
 
 def get_biblist(lines):
     bib=list()
-    
+
     temp=dict()
-    
+
     inref=False
     inkey=False
-    
+
     #f= codecs.open('index2.html', "w", "utf-8")
-    
+
     for l in lines:
-        
-        if l:        
+
+        if l:
             # if not in a current ref we search for a new entry
             if not inref:
                 if l[0]=='@':#entry found
@@ -172,7 +172,7 @@ def get_biblist(lines):
                     ktemp=lst[1].split(',') # get rid of after the ,
                     #f.write(ktemp[0]+ '\n')
                     inref=True
-                    temp=dict() # dictionnary 
+                    temp=dict() # dictionnary
                     temp['type']=t.lower()
                     temp['key']=ktemp[0]
                     #print temp['key']
@@ -180,12 +180,12 @@ def get_biblist(lines):
                 if l[0]=='}': # closing ref (necessary t)
                     prep_ref(temp)
                     bib.append(temp)
-                    inref=False    
+                    inref=False
                 else:
-    
-                    if not inkey:    # not locked in an opened key      
+
+                    if not inkey:    # not locked in an opened key
                         lst=l.split('=') # separate key and value
-                        
+
                         key=lst[0].replace(' ','').lower()
                         val=u''.join(lst[1:])
                         #print '\t',key,val
@@ -193,7 +193,7 @@ def get_biblist(lines):
                             while val[-1]=='\n' or val[-1]==',' or val[-1]==' ' or val[-1]=='\r':
                                 val=val[:-1]
                             temp[key]=val
-                            
+
                         #f.write('\t'+ key + ' : ' + unlatexit(val)+'\n')
                         if not l.count('{')==l.count('}'):
                             opendif=l.count('{')-l.count('}')
@@ -209,9 +209,9 @@ def get_biblist(lines):
                             temp[key]=val
                         else:
                             opendif+=l.count('{')-l.count('}')
-                
+
     return bib
-    
+
 def format_bib(bib):
     for temp in bib:
             #print temp['type']
@@ -223,7 +223,7 @@ def format_bib(bib):
             if not temp['volume']=='':
                 temp2+=' Vol. '+temp['volume']+','
             if not temp['number']=='':
-                temp2+=' N. '+temp['number']+','             
+                temp2+=' N. '+temp['number']+','
             if not temp['pages']=='':
                 temp2+=' pp '+temp['pages']+','
             temp['volnumpage']=temp2[:-1];
@@ -231,8 +231,8 @@ def format_bib(bib):
             if temp['title'][0]==' ':
                 temp['title']=temp['title'][1:]
             temp['year']=temp['year'].replace(' ','')
-            temp['submited']=clean_spaces(temp['submited'])	
-            
+            temp['submited']=clean_spaces(temp['submited'])
+
 
 def load_bibfile(fname,recentyears=3):
     bib=list()
@@ -240,7 +240,7 @@ def load_bibfile(fname,recentyears=3):
     bib=load_bibfile2(fname)
     #print bib
     format_bib(bib)
-    
+
     year=datetime.date.today().year
     reentyears=list()
     for i in range(recentyears):
@@ -249,12 +249,12 @@ def load_bibfile(fname,recentyears=3):
     for temp in bib:
         temp['recentyears']=reentyears
         #print temp['key'],temp['type'],temp['year']
-        
+
     bib.sort(key=lambda k: k['year'],reverse=True)
 
     #for temp in bib:
     #    print temp['key'],temp['type'],temp['year']
-    
+
     return bib
 
 
@@ -265,17 +265,21 @@ def plugin_return(config):
     """
     fname=   config[plug_name]['bibfile']
     res=load_bibfile(fname)
+    lstyear={}
+    for item in res:
+        lstyear[item['year']]=1
+    config[plug_name]['years']=sorted(lstyear.keys(),reverse=True)
     return res
-    
+
 def plugin_change_lists(website):
     """
     function that can modify the whole website (before content generation)
     """
-    pass    
-    
+    website.ext['bibtex-years']=website.config[plug_name]['years']
+    pass
+
 def plugin_change_lists_post(website):
     """
     function that can modify the whole website (after content generation)
     """
-    pass    
-        
+    pass
