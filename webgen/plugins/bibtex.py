@@ -267,8 +267,14 @@ def plugin_return(config):
     res=load_bibfile(fname)
     lstyear={}
     for item in res:
-        lstyear[item['year']]=1
+        if not item['year'] in lstyear:
+            lstyear[item['year']]={}
+        if not item['type'] in lstyear[item['year']]:
+            lstyear[item['year']][item['type']]=1
+
+
     config[plug_name]['years']=sorted(lstyear.keys(),reverse=True)
+    config[plug_name]['years-type']=lstyear
     return res
 
 def plugin_change_lists(website):
@@ -276,6 +282,7 @@ def plugin_change_lists(website):
     function that can modify the whole website (before content generation)
     """
     website.ext['bibtex-years']=website.config[plug_name]['years']
+    website.ext['bibtex-years-type']=website.config[plug_name]['years-type']
     pass
 
 def plugin_change_lists_post(website):
