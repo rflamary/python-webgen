@@ -98,7 +98,7 @@ def plugin_change_lists_post(website):
     #print len(website.pagelist)
     ptemp=list()
     lang='zl'
-    zorglangue=zorglang
+    #zorglangue=zorglang
     for page in website.pagelist:
         if page['lang']=='fr':
 
