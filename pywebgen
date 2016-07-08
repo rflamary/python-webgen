@@ -53,6 +53,11 @@ title: empty page
 empty text
 """
 
+default_template="""
+{{ content }}
+
+"""
+
 def init(config):
     sys.path.append('md_extensions')
 
@@ -93,6 +98,7 @@ def main(argv):
                    help='set the configuration file',action="store",default=c_file) 
     parser.add_argument('-v','--verbose',help='print information during website generation', action='store_true')
     parser.add_argument('-i','--init',help='create simple stater website in the current folder', action='store_true')
+    parser.add_argument('-p','--path',type=str,default='',nargs=1,help='')
                    
     args= parser.parse_args()   
     
@@ -101,6 +107,8 @@ def main(argv):
         init_default_website()
     else:    
         config=webgen.load_config(args.configfile)
+        if args.path:
+            os.chdir(args.path[0])
         if config==None:
             print('bad config file format')   
         else:
