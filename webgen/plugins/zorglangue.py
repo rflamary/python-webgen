@@ -78,7 +78,7 @@ def zorg_tree(tree):
 def zorg_word(word):
 
     if word.isalpha():
-        if word[0] in string.uppercase and word[1:].lower()==word[1:]:
+        if word[0].isupper() and word[1:].lower()==word[1:]:
             temp=word[::-1]
             word=word[-1].upper()+ temp[1:-1]+word[0].lower()
         else:
