@@ -268,10 +268,11 @@ def plugin_return(config):
     res=load_bibfile(fname)
     lstyear={}
     for item in res:
-        if not item['year'] in lstyear:
-            lstyear[item['year']]={}
-        if not item['type'] in lstyear[item['year']]:
-            lstyear[item['year']][item['type']]=1
+        if not item['submited']:
+            if not item['year'] in lstyear:
+                lstyear[item['year']]={}
+            if not item['type'] in lstyear[item['year']]:
+                lstyear[item['year']][item['type']]=1
 
 
     config[plug_name]['years']=sorted(lstyear.keys(),reverse=True)
