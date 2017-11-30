@@ -23,6 +23,11 @@ def zorglangue(text="Vive Zorglub!"):
     res=un_tree(tree[0],lstsplit)
     return res
 
+def zorglangue2(text="Vive Zorglub!"):
+    temp=re.split('(\W+)',text)
+    temp=[zorg_word(w) for w in temp]
+    return ''.join(temp)
+
 word_re = re.compile(r'\b\w+\b')
 
 def zorglang(text):
@@ -78,6 +83,10 @@ def zorg_tree(tree):
 def zorg_word(word):
 
     if word.isalpha():
+        # if word[0]=='"':
+        #     return '"' + zorg_word(word[1:])
+        # elif word[-1]=='"':
+        #     return  zorg_word(word[:-1])+ '"'
         if word[0].isupper() and word[1:].lower()==word[1:]:
             temp=word[::-1]
             word=word[-1].upper()+ temp[1:-1]+word[0].lower()
