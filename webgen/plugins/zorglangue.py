@@ -16,21 +16,21 @@ plug_name='zorglangue'
 
 lstsplit=["\n",".",";",",","-","'","?","!",'-','(',')'," "]
 
-def zorglangue(text="Vive Zorglub!"):
+def zorglangue2(text="Vive Zorglub!"):
     res=[text]
     tree=get_tree([text],lstsplit)
     tree=zorg_tree(tree)
     res=un_tree(tree[0],lstsplit)
     return res
 
-def zorglangue2(text="Vive Zorglub!"):
+def zorglangue3(text="Vive Zorglub!"):
     temp=re.split('(\W+)',text)
     temp=[zorg_word(w) for w in temp]
     return ''.join(temp)
 
 word_re = re.compile(r'\b\w+\b')
 
-def zorglang(text):
+def zorglangue(text):
     with io.StringIO() as buf:
         last_index = 0
         for match in word_re.finditer(text):
@@ -81,17 +81,15 @@ def zorg_tree(tree):
     return res
 
 def zorg_word(word):
-
-    if word.isalpha():
-        # if word[0]=='"':
-        #     return '"' + zorg_word(word[1:])
-        # elif word[-1]=='"':
-        #     return  zorg_word(word[:-1])+ '"'
-        if word[0].isupper() and word[1:].lower()==word[1:]:
-            temp=word[::-1]
-            word=word[-1].upper()+ temp[1:-1]+word[0].lower()
-        else:
-            word=word[::-1]
+    #print(word)
+    if len(word)>1:
+        if word.isalpha():
+            
+            if word[0].isupper() and word[1:].lower()==word[1:]:
+                temp=word[::-1]
+                word=word[-1].upper()+ temp[1:-1]+word[0].lower()
+            else:
+                word=word[::-1]
     return word
 
 def plugin_change_lists(website):
