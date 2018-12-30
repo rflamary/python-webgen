@@ -16,21 +16,21 @@ plug_name='zorglangue'
 
 lstsplit=["\n",".",";",",","-","'","?","!",'-','(',')'," "]
 
-def zorglangue2(text="Vive Zorglub!"):
+def zorglangue(text="Vive Zorglub!"):
     res=[text]
     tree=get_tree([text],lstsplit)
     tree=zorg_tree(tree)
     res=un_tree(tree[0],lstsplit)
     return res
 
-def zorglangue3(text="Vive Zorglub!"):
+def zorglangue(text="Vive Zorglub!"):
     temp=re.split('(\W+)',text)
     temp=[zorg_word(w) for w in temp]
     return ''.join(temp)
 
 word_re = re.compile(r'\b\w+\b')
 
-def zorglangue(text):
+def zorglang(text):
     with io.StringIO() as buf:
         last_index = 0
         for match in word_re.finditer(text):
