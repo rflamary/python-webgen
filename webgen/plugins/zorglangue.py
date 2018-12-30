@@ -23,7 +23,7 @@ def zorglangue(text="Vive Zorglub!"):
     res=un_tree(tree[0],lstsplit)
     return res
 
-def zorglangue(text="Vive Zorglub!"):
+def zorglangue2(text="Vive Zorglub!"):
     temp=re.split('(\W+)',text)
     temp=[zorg_word(w) for w in temp]
     return ''.join(temp)
