@@ -189,7 +189,7 @@ def get_biblist(lines):
                         lst=l.split('=') # separate key and value
 
                         key=lst[0].replace(' ','').lower()
-                        val=u''.join(lst[1:])
+                        val=u'='.join(lst[1:])
                         #print '\t',key,val
                         if len(val)>0:
                             while val[-1]=='\n' or val[-1]==',' or val[-1]==' ' or val[-1]=='\r':
