@@ -27,6 +27,12 @@ def load_csv(fname,sep):
     for line in f:
         #print line
         s=line.split(sep)
+        for i,txt in enumerate(s):
+            txt=txt.replace('""','"')
+            if txt.startswith('"') and txt.endswith('"'):
+                txt=txt[1:-1]
+            s[i]=txt
+
         res.append(s)
         
         
