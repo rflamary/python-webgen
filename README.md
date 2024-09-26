@@ -5,6 +5,7 @@ Webgen.py is a Python version of the well known [webgen](http://webgen.rubyforge
 
 ## Features
 
+* Easy for Beginners to learn.
 * Quick generation of multilingual (.en.page, .fr.page) static websites.
 * Compatibility with webgen site architecture (.page format).
 * Clean and easy site architecture (one .page file == one html file)
