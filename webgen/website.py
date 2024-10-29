@@ -11,7 +11,8 @@ from builtins import object
 
 import configobj, jinja2
 import os, fnmatch, markdown, codecs
-import datetime, imp
+import datetime
+from importlib.util import spec_from_file_location, module_from_spec
 import validate
 from . import plugins
 
@@ -88,11 +89,19 @@ def import_(filename):
     """
     import modules as plugins
     """
+    print(filename)
     (path, name) = os.path.split(filename)
     (name, ext) = os.path.splitext(name)
 
-    (file, filename, data) = imp.find_module(name, [path])
-    return imp.load_module(name, file, filename, data)
+    spec = spec_from_file_location(name, filename+'.py')
+    mod = module_from_spec(spec)
+    #sys.modules[spec.name] = mod 
+    spec.loader.exec_module(mod)
+
+    return mod
+
+    # (file, filename, data) = imp.find_module(name, [path])
+    # return imp.load_module(name, file, filename, data)
 
 
 def init_page_properties(page,plugs=[]):
@@ -274,7 +283,7 @@ class website(object):
             self.log("\t" + pname)
             try:
                 self.plugs.append(import_(self.config['General']['plugdir']+os.sep+pname))
-            except ImportError:
+            except FileNotFoundError:
                 #try:
                 if pname in plugins.plug_list:
                     self.plugs.append(plugins.plug_list[pname])
